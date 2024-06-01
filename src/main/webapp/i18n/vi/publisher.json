@@ -1,0 +1,26 @@
+{
+  "systemLibraryApp": {
+    "publisher": {
+      "home": {
+        "title": "Publishers",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Publisher",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Publisher",
+        "search": "Tìm Publisher",
+        "notFound": "No Publishers found"
+      },
+      "created": "Một Publisher mới được tạo với định danh {{ param }}",
+      "updated": "Một Publisher cập nhật với định danh {{ param }}",
+      "deleted": "Một Publisher đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Publisher {{ id }}?"
+      },
+      "detail": {
+        "title": "Publisher"
+      },
+      "id": "ID",
+      "name": "Name",
+      "bookCopy": "Book Copy"
+    }
+  }
+}

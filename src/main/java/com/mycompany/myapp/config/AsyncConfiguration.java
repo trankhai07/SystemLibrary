@@ -34,9 +34,9 @@ public class AsyncConfiguration implements AsyncConfigurer {
     public Executor getAsyncExecutor() {
         log.debug("Creating Async Task Executor");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(taskExecutionProperties.getPool().getCoreSize());
-        executor.setMaxPoolSize(taskExecutionProperties.getPool().getMaxSize());
-        executor.setQueueCapacity(taskExecutionProperties.getPool().getQueueCapacity());
+        executor.setCorePoolSize(taskExecutionProperties.getPool().getCoreSize()); // Số lượng luồng chính
+        executor.setMaxPoolSize(taskExecutionProperties.getPool().getMaxSize()); // Số lượng luồng tối đa
+        executor.setQueueCapacity(taskExecutionProperties.getPool().getQueueCapacity()); // Kích thước hàng đợi
         executor.setThreadNamePrefix(taskExecutionProperties.getThreadNamePrefix());
         return new ExceptionHandlingAsyncTaskExecutor(executor);
     }

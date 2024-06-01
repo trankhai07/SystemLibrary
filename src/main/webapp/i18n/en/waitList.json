@@ -1,0 +1,27 @@
+{
+  "systemLibraryApp": {
+    "waitList": {
+      "home": {
+        "title": "Wait Lists",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Wait List",
+        "createOrEditLabel": "Create or edit a Wait List",
+        "search": "Search for Wait List",
+        "notFound": "No Wait Lists found"
+      },
+      "created": "A new Wait List is created with identifier {{ param }}",
+      "updated": "A Wait List is updated with identifier {{ param }}",
+      "deleted": "A Wait List is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Wait List {{ id }}?"
+      },
+      "detail": {
+        "title": "Wait List"
+      },
+      "id": "ID",
+      "creatAt": "Creat At",
+      "patronAccount": "Patron Account",
+      "book": "Book"
+    }
+  }
+}

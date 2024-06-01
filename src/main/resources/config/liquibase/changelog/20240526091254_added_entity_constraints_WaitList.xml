@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity WaitList.
+    -->
+    <changeSet id="20240526091254-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="patron_account_card_number"
+                                 baseTableName="wait_list"
+                                 constraintName="fk_wait_list__patron_account_id"
+                                 referencedColumnNames="card_number"
+                                 referencedTableName="patron_account"/>
+
+        <addForeignKeyConstraint baseColumnNames="book_id"
+                                 baseTableName="wait_list"
+                                 constraintName="fk_wait_list__book_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="book"/>
+    </changeSet>
+</databaseChangeLog>

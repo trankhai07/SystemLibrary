@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.service.dto.InfoCheckOut;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import javax.mail.MessagingException;
@@ -28,7 +29,7 @@ public class MailService {
     private final Logger log = LoggerFactory.getLogger(MailService.class);
 
     private static final String USER = "user";
-
+    private static final String InfoCheckOut = "infoCheckOut";
     private static final String BASE_URL = "baseUrl";
 
     private final JHipsterProperties jHipsterProperties;
@@ -78,35 +79,40 @@ public class MailService {
     }
 
     @Async
-    public void sendEmailFromTemplate(User user, String templateName, String titleKey) {
-        if (user.getEmail() == null) {
-            log.debug("Email doesn't exist for user '{}'", user.getLogin());
+    public void sendEmailFromTemplate(InfoCheckOut infoCheckOut, String templateName, String titleKey) {
+        if (infoCheckOut.getEmail() == null) {
+            log.debug("Email doesn't exist for user '{}'", infoCheckOut.getUsername());
             return;
         }
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        Locale locale = Locale.forLanguageTag("en");
         Context context = new Context(locale);
-        context.setVariable(USER, user);
+        context.setVariable(InfoCheckOut, infoCheckOut);
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
-        sendEmail(user.getEmail(), subject, content, false, true);
+        sendEmail(infoCheckOut.getEmail(), subject, content, false, true);
     }
 
+    //    @Async
+    //    public void sendActivationEmail(User user) {
+    //        log.debug("Sending activation email to '{}'", user.getEmail());
+    //        sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
+    //    }
+    //
+    //    @Async
+    //    public void sendCreationEmail(User user) {
+    //        log.debug("Sending creation email to '{}'", user.getEmail());
+    //        sendEmailFromTemplate(user, "mail/creationEmail", "email.activation.title");
+    //    }
+    //
+    //    @Async
+    //    public void sendPasswordResetMail(User user) {
+    //        log.debug("Sending password reset email to '{}'", user.getEmail());
+    //        sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+    //    }
     @Async
-    public void sendActivationEmail(User user) {
-        log.debug("Sending activation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/activationEmail", "email.activation.title");
-    }
-
-    @Async
-    public void sendCreationEmail(User user) {
-        log.debug("Sending creation email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/creationEmail", "email.activation.title");
-    }
-
-    @Async
-    public void sendPasswordResetMail(User user) {
-        log.debug("Sending password reset email to '{}'", user.getEmail());
-        sendEmailFromTemplate(user, "mail/passwordResetEmail", "email.reset.title");
+    public void sendReturnBook(com.mycompany.myapp.service.dto.InfoCheckOut InfoCheckOut) {
+        log.debug("Sending password reset email to '{}'", InfoCheckOut.getEmail());
+        sendEmailFromTemplate(InfoCheckOut, "mail/returnBook", "email.return.title");
     }
 }

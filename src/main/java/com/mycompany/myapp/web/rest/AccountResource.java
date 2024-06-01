@@ -55,15 +55,15 @@ public class AccountResource {
      * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already used.
      * @throws LoginAlreadyUsedException {@code 400 (Bad Request)} if the login is already used.
      */
-    @PostMapping("/register")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
-        if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
-            throw new InvalidPasswordException();
-        }
-        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
-        mailService.sendActivationEmail(user);
-    }
+    //    @PostMapping("/register")
+    //    @ResponseStatus(HttpStatus.CREATED)
+    //    public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
+    //        if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
+    //            throw new InvalidPasswordException();
+    //        }
+    //        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
+    //        mailService.sendActivationEmail(user);
+    //    }
 
     /**
      * {@code GET  /activate} : activate the registered user.
@@ -153,17 +153,17 @@ public class AccountResource {
      *
      * @param mail the mail of the user.
      */
-    @PostMapping(path = "/account/reset-password/init")
-    public void requestPasswordReset(@RequestBody String mail) {
-        Optional<User> user = userService.requestPasswordReset(mail);
-        if (user.isPresent()) {
-            mailService.sendPasswordResetMail(user.get());
-        } else {
-            // Pretend the request has been successful to prevent checking which emails really exist
-            // but log that an invalid attempt has been made
-            log.warn("Password reset requested for non existing mail");
-        }
-    }
+    //    @PostMapping(path = "/account/reset-password/init")
+    //    public void requestPasswordReset(@RequestBody String mail) {
+    //        Optional<User> user = userService.requestPasswordReset(mail);
+    //        if (user.isPresent()) {
+    //            mailService.sendPasswordResetMail(user.get());
+    //        } else {
+    //            // Pretend the request has been successful to prevent checking which emails really exist
+    //            // but log that an invalid attempt has been made
+    //            log.warn("Password reset requested for non existing mail");
+    //        }
+    //    }
 
     /**
      * {@code POST   /account/reset-password/finish} : Finish to reset the password of the user.
@@ -183,6 +183,18 @@ public class AccountResource {
             throw new AccountResourceException("No user was found for this reset key");
         }
     }
+
+    //    @PostMapping(path = "/account/return-book")
+    //    public void returnBook(@RequestBody String mail) {
+    //        Optional<User> user = userService.requestPasswordReset(mail);
+    //        if (user.isPresent()) {
+    //            mailService.sendReturnBook(user.get());
+    //        } else {
+    //            // Pretend the request has been successful to prevent checking which emails really exist
+    //            // but log that an invalid attempt has been made
+    //            log.warn("Password reset requested for non existing mail");
+    //        }
+    //    }
 
     private static boolean isPasswordLengthInvalid(String password) {
         return (

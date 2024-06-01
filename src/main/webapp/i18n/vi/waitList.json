@@ -1,0 +1,27 @@
+{
+  "systemLibraryApp": {
+    "waitList": {
+      "home": {
+        "title": "Wait Lists",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Wait List",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Wait List",
+        "search": "Tìm Wait List",
+        "notFound": "No Wait Lists found"
+      },
+      "created": "Một Wait List mới được tạo với định danh {{ param }}",
+      "updated": "Một Wait List cập nhật với định danh {{ param }}",
+      "deleted": "Một Wait List đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Wait List {{ id }}?"
+      },
+      "detail": {
+        "title": "Wait List"
+      },
+      "id": "ID",
+      "creatAt": "Creat At",
+      "patronAccount": "Patron Account",
+      "book": "Book"
+    }
+  }
+}

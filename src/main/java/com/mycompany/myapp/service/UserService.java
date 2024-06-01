@@ -227,6 +227,29 @@ public class UserService {
             .map(AdminUserDTO::new);
     }
 
+    public Optional<User> updateUserPatronAccount(AdminUserDTO userDTO) {
+        return Optional
+            .of(userRepository.findById(userDTO.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .map(user -> {
+                this.clearUserCaches(user);
+                user.setLogin(userDTO.getLogin().toLowerCase());
+                user.setFirstName(userDTO.getFirstName());
+                user.setLastName(userDTO.getLastName());
+                if (userDTO.getEmail() != null) {
+                    user.setEmail(userDTO.getEmail().toLowerCase());
+                }
+                user.setImageUrl(userDTO.getImageUrl());
+                user.setActivated(true);
+                user.setLangKey(userDTO.getLangKey());
+                userSearchRepository.save(user);
+                this.clearUserCaches(user);
+                log.debug("Changed Information for User: {}", user);
+                return user;
+            });
+    }
+
     public void deleteUser(String login) {
         userRepository
             .findOneByLogin(login)

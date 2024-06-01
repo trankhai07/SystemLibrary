@@ -1,0 +1,11 @@
+{
+  "systemLibraryApp": {
+    "Status": {
+      "null": "",
+      "Confirmed": "Confirmed",
+      "Canceled": "Canceled",
+      "Pending": "Pending",
+      "Refused": "Refused"
+    }
+  }
+}

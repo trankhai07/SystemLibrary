@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity CheckOut.
+    -->
+    <changeSet id="20240526091257-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="book_copy_id"
+                                 baseTableName="check_out"
+                                 constraintName="fk_check_out__book_copy_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="book_copy"/>
+
+        <addForeignKeyConstraint baseColumnNames="patron_account_card_number"
+                                 baseTableName="check_out"
+                                 constraintName="fk_check_out__patron_account_id"
+                                 referencedColumnNames="card_number"
+                                 referencedTableName="patron_account"/>
+    </changeSet>
+</databaseChangeLog>

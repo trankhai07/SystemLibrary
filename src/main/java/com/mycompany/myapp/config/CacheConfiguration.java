@@ -81,6 +81,25 @@ public class CacheConfiguration {
             createCache(cm, com.mycompany.myapp.domain.User.class.getName(), jcacheConfiguration);
             createCache(cm, com.mycompany.myapp.domain.Authority.class.getName(), jcacheConfiguration);
             createCache(cm, com.mycompany.myapp.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Category.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Category.class.getName() + ".books", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Book.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Book.class.getName() + ".bookCopies", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Book.class.getName() + ".waitLists", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Book.class.getName() + ".authors", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Author.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Author.class.getName() + ".books", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.WaitList.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.BookCopy.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.BookCopy.class.getName() + ".checkOuts", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Publisher.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Publisher.class.getName() + ".bookCopies", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.CheckOut.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.PatronAccount.class.getName(), jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.PatronAccount.class.getName() + ".notifications", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.PatronAccount.class.getName() + ".waitLists", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.PatronAccount.class.getName() + ".checkOuts", jcacheConfiguration);
+            createCache(cm, com.mycompany.myapp.domain.Notification.class.getName(), jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

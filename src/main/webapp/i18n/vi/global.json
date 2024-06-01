@@ -7,6 +7,15 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Thực thể",
+        "category": "Category",
+        "book": "Book",
+        "author": "Author",
+        "waitList": "Wait List",
+        "bookCopy": "Book Copy",
+        "publisher": "Publisher",
+        "checkOut": "Check Out",
+        "patronAccount": "Patron Account",
+        "notification": "Notification",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

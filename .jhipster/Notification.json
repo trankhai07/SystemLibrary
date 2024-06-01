@@ -1,0 +1,32 @@
+{
+  "applications": "*",
+  "changelogDate": "20240526091259",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "notification",
+  "fields": [
+    {
+      "fieldName": "sentAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "NoTi",
+      "fieldValues": "Warning,News"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Notification",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "patronAccount",
+      "otherEntityRelationshipName": "notification",
+      "relationshipName": "patronAccount",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

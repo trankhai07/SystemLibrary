@@ -1,0 +1,53 @@
+{
+  "applications": "*",
+  "changelogDate": "20240526091255",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "book_copy",
+  "fields": [
+    {
+      "fieldName": "yearPublished",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "amount",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "image",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "BookCopy",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "checkOut",
+      "otherEntityRelationshipName": "bookCopy",
+      "relationshipName": "checkOut",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityField": "title",
+      "otherEntityName": "book",
+      "otherEntityRelationshipName": "bookCopy",
+      "relationshipName": "book",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "publisher",
+      "otherEntityRelationshipName": "bookCopy",
+      "relationshipName": "publisher",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

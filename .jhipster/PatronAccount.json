@@ -1,0 +1,51 @@
+{
+  "applications": "*",
+  "changelogDate": "20240526091258",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "patron_account",
+  "fields": [
+    {
+      "fieldName": "cardNumber",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "10",
+      "options": {
+        "id": true
+      }
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "PatronAccount",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "ownerSide": true,
+      "relationshipName": "user",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "notification",
+      "otherEntityRelationshipName": "patronAccount",
+      "relationshipName": "notification",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "waitList",
+      "otherEntityRelationshipName": "patronAccount",
+      "relationshipName": "waitList",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "checkOut",
+      "otherEntityRelationshipName": "patronAccount",
+      "relationshipName": "checkOut",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

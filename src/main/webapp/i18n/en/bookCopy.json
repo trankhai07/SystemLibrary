@@ -1,0 +1,31 @@
+{
+  "systemLibraryApp": {
+    "bookCopy": {
+      "home": {
+        "title": "Book Copies",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Book Copy",
+        "createOrEditLabel": "Create or edit a Book Copy",
+        "search": "Search for Book Copy",
+        "notFound": "No Book Copies found"
+      },
+      "created": "A new Book Copy is created with identifier {{ param }}",
+      "updated": "A Book Copy is updated with identifier {{ param }}",
+      "deleted": "A Book Copy is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Book Copy {{ id }}?"
+      },
+      "detail": {
+        "title": "Book Copy"
+      },
+      "id": "ID",
+      "yearPublished": "Year Published",
+      "amount": "Amount",
+      "image": "Image",
+      "description": "Description",
+      "checkOut": "Check Out",
+      "book": "Book",
+      "publisher": "Publisher"
+    }
+  }
+}

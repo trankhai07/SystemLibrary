@@ -1,0 +1,30 @@
+{
+  "systemLibraryApp": {
+    "checkOut": {
+      "home": {
+        "title": "Check Outs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Check Out",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Check Out",
+        "search": "Tìm Check Out",
+        "notFound": "No Check Outs found"
+      },
+      "created": "Một Check Out mới được tạo với định danh {{ param }}",
+      "updated": "Một Check Out cập nhật với định danh {{ param }}",
+      "deleted": "Một Check Out đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Check Out {{ id }}?"
+      },
+      "detail": {
+        "title": "Check Out"
+      },
+      "id": "ID",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "status": "Status",
+      "isReturned": "Is Returned",
+      "bookCopy": "Book Copy",
+      "patronAccount": "Patron Account"
+    }
+  }
+}

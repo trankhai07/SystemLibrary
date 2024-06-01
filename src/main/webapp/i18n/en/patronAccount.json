@@ -1,0 +1,28 @@
+{
+  "systemLibraryApp": {
+    "patronAccount": {
+      "home": {
+        "title": "Patron Accounts",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Patron Account",
+        "createOrEditLabel": "Create or edit a Patron Account",
+        "search": "Search for Patron Account",
+        "notFound": "No Patron Accounts found"
+      },
+      "created": "A new Patron Account is created with identifier {{ param }}",
+      "updated": "A Patron Account is updated with identifier {{ param }}",
+      "deleted": "A Patron Account is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Patron Account {{ id }}?"
+      },
+      "detail": {
+        "title": "Patron Account"
+      },
+      "cardNumber": "Card Number",
+      "user": "User",
+      "notification": "Notification",
+      "waitList": "Wait List",
+      "checkOut": "Check Out"
+    }
+  }
+}

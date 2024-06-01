@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+  <head>
+    <title th:text="#{email.return.title}">System Library return Book</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+  </head>
+  <body>
+    <p th:text="#{email.return.greeting(${infoCheckOut.username})}">Dear</p>
+    <p th:text="#{email.return.text1(${infoCheckOut.bookTitle})}">For your account there is a book with a return date of tomorrow</p>
+    <p>
+      <span th:text="#{email.return.text2}">Regards, </span>
+      <br />
+      <em th:text="#{email.signature}">JHipster.</em>
+    </p>
+  </body>
+</html>

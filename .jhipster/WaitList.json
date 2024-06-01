@@ -1,0 +1,34 @@
+{
+  "applications": "*",
+  "changelogDate": "20240526091254",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "wait_list",
+  "fields": [
+    {
+      "fieldName": "creatAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "WaitList",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "patronAccount",
+      "otherEntityRelationshipName": "waitList",
+      "relationshipName": "patronAccount",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityField": "title",
+      "otherEntityName": "book",
+      "otherEntityRelationshipName": "waitList",
+      "relationshipName": "book",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

@@ -1,0 +1,46 @@
+{
+  "applications": "*",
+  "changelogDate": "20240526091257",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "check_out",
+  "fields": [
+    {
+      "fieldName": "startTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "endTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "Status",
+      "fieldValues": "Confirmed,Canceled,Pending,Refused"
+    },
+    {
+      "fieldName": "isReturned",
+      "fieldType": "Boolean"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "CheckOut",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "bookCopy",
+      "otherEntityRelationshipName": "checkOut",
+      "relationshipName": "bookCopy",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "patronAccount",
+      "otherEntityRelationshipName": "checkOut",
+      "relationshipName": "patronAccount",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

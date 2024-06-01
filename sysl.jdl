@@ -1,0 +1,71 @@
+entity Category {
+    name String required maxlength(255)
+    description String
+}
+entity Book {
+    title String required maxlength(255)
+    image String
+    description String
+}
+entity Author {
+    name String required maxlength(255)
+}
+entity WaitList {
+    creatAt Instant
+}
+entity BookCopy {
+    yearPublished Integer
+    amount Integer
+    image String
+    description String
+}
+entity Publisher {
+    name String required maxlength(255)
+}
+enum Status{
+    Confirmed,
+    Canceled,
+    Pending,
+    Refused
+}
+entity CheckOut {
+    startTime Instant
+    endTime Instant
+    status Status
+    isReturned Boolean
+}
+entity PatronAccount {
+    @Id cardNumber String maxlength(10)
+}
+entity Notification {
+    sentAt Instant
+    type NoTi
+}
+enum NoTi{
+    Warning,
+    News
+}
+relationship OneToOne {
+    PatronAccount{user(login)} to User
+}
+relationship OneToMany{
+    Category to Book{category(name)}
+    Book to BookCopy{book(title)}
+    Publisher to BookCopy{publisher(name)}
+    PatronAccount to Notification
+
+    PatronAccount to WaitList
+    Book to WaitList{book(title)}
+
+    BookCopy to CheckOut
+
+    PatronAccount to CheckOut
+}
+relationship ManyToMany {
+    Book to Author
+}
+
+
+paginate * with pagination
+service * with serviceClass
+

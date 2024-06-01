@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity Notification.
+    -->
+    <changeSet id="20240526091259-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="patron_account_card_number"
+                                 baseTableName="notification"
+                                 constraintName="fk_notification__patron_account_id"
+                                 referencedColumnNames="card_number"
+                                 referencedTableName="patron_account"/>
+    </changeSet>
+</databaseChangeLog>

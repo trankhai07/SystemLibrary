@@ -1,0 +1,29 @@
+{
+  "applications": "*",
+  "changelogDate": "20240526091256",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "publisher",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "255"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Publisher",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "bookCopy",
+      "otherEntityRelationshipName": "publisher",
+      "relationshipName": "bookCopy",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

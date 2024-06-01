@@ -1,0 +1,26 @@
+{
+  "systemLibraryApp": {
+    "author": {
+      "home": {
+        "title": "Authors",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Author",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Author",
+        "search": "Tìm Author",
+        "notFound": "No Authors found"
+      },
+      "created": "Một Author mới được tạo với định danh {{ param }}",
+      "updated": "Một Author cập nhật với định danh {{ param }}",
+      "deleted": "Một Author đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Author {{ id }}?"
+      },
+      "detail": {
+        "title": "Author"
+      },
+      "id": "ID",
+      "name": "Name",
+      "book": "Book"
+    }
+  }
+}
