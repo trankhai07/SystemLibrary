@@ -12,6 +12,7 @@ import Publisher from './publisher';
 import CheckOut from './check-out';
 import PatronAccount from './patron-account';
 import Notification from './notification';
+import CheckOutClient from './check-out/check-out-client';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -26,6 +27,7 @@ export default () => {
         <Route path="book-copy/*" element={<BookCopy />} />
         <Route path="publisher/*" element={<Publisher />} />
         <Route path="check-out/*" element={<CheckOut />} />
+        <Route path="check-out-client/*" element={<CheckOutClient />} />
         <Route path="patron-account/*" element={<PatronAccount />} />
         <Route path="notification/*" element={<Notification />} />
         {/* jhipster-needle-add-route-path - JHipster will add routes here */}

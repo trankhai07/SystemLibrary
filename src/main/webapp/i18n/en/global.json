@@ -6,9 +6,10 @@
       "home": "Home",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
+        "aboutPeople": "About People",
         "main": "Entities",
         "category": "Category",
-        "book": "Book",
+        "book": "Books",
         "author": "Author",
         "waitList": "Wait List",
         "bookCopy": "Book Copy",
@@ -51,7 +52,14 @@
       "confirmpassword.label": "New password confirmation",
       "confirmpassword.placeholder": "Confirm the new password",
       "email.label": "Email",
-      "email.placeholder": "Your email"
+      "email.placeholder": "Your email",
+      "search": "Search",
+      "active": "Active",
+      "deactive": "Deactive",
+      "confirmed": "Confirmed",
+      "refused": "Refused",
+      "pending": "Pending",
+      "canceled": "Canceled"
     },
     "messages": {
       "info": {
@@ -94,7 +102,10 @@
     "ribbon": {
       "dev": "Development"
     },
-    "item-count": "Showing {{first}} - {{second}} of {{total}} items."
+    "item-count": "Showing {{first}} - {{second}} of {{total}} items.",
+    "header": {
+      "nameAccount": "Login"
+    }
   },
   "entity": {
     "action": {
@@ -133,6 +144,14 @@
       "set": "Following filters are set",
       "clear": "Clear filter",
       "clearAll": "Clear all filters"
+    },
+    "recomment": {
+      "title": "Recomment",
+      "dimension": "Dimension",
+      "image": "Maximum upload size: 10MB/file.",
+      "audio": "Maximum upload size: 20MB/file.",
+      "video": "Maximum upload size: 100MB/file.",
+      "content": "Must not exceed 1000 characters"
     }
   },
   "error": {

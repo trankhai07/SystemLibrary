@@ -5,13 +5,14 @@
         "title": "Books",
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Book",
+        "editLabel": "Edit a Book",
         "createOrEditLabel": "Create or edit a Book",
         "search": "Search for Book",
         "notFound": "No Books found"
       },
-      "created": "A new Book is created with identifier {{ param }}",
-      "updated": "A Book is updated with identifier {{ param }}",
-      "deleted": "A Book is deleted with identifier {{ param }}",
+      "created": "Book created successfully!",
+      "updated": "Book updated successfully!",
+      "deleted": "Book deleted successfully!",
       "delete": {
         "question": "Are you sure you want to delete Book {{ id }}?"
       },

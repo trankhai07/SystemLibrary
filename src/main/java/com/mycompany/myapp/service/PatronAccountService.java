@@ -103,6 +103,7 @@ public class PatronAccountService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
+
         userRepository.save(newUser);
         userSearchRepository.save(newUser);
         this.clearUserCaches(newUser);
@@ -196,9 +197,9 @@ public class PatronAccountService {
     }
 
     @Transactional(readOnly = true)
-    public List<PatronAccount> listPatronNotEnoughCondition() {
+    public Page<PatronAccount> listPatronNotEnoughCondition(Pageable pageable) {
         log.debug("Request to get listPatronNotEnoughCondition");
-        return patronAccountRepository.listPatronNotEnoughCondition(Instant.now());
+        return patronAccountRepository.listPatronNotEnoughCondition(Instant.now(), pageable);
     }
 
     /**
@@ -208,6 +209,12 @@ public class PatronAccountService {
      */
     public Page<PatronAccount> findAllWithEagerRelationships(Pageable pageable) {
         return patronAccountRepository.findAllWithEagerRelationships(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PatronAccount> findAllUser(Pageable pageable) {
+        log.debug("Request to get all PatronAccounts");
+        return patronAccountRepository.findAllUser(pageable);
     }
 
     /**
@@ -222,6 +229,12 @@ public class PatronAccountService {
         return patronAccountRepository.findOneWithEagerRelationships(id);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<PatronAccount> findOneByUserLogin(String username) {
+        log.debug("Request to get PatronAccount : {}", username);
+        return patronAccountRepository.findOneByUserLogin(username);
+    }
+
     /**
      * Delete the patronAccount by id.
      *
@@ -229,8 +242,12 @@ public class PatronAccountService {
      */
     public void delete(String id) {
         log.debug("Request to delete PatronAccount : {}", id);
+        Optional<PatronAccount> patronAccount = patronAccountRepository.findById(id);
         patronAccountRepository.deleteById(id);
         patronAccountSearchRepository.deleteById(id);
+        if (patronAccount.isPresent() && patronAccount.get().getUser() != null) userService.deleteUser(
+            patronAccount.get().getUser().getLogin()
+        );
     }
 
     /**

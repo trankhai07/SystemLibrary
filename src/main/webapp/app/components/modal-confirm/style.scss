@@ -1,0 +1,19 @@
+.modal-confirm {
+  .modal-confirm-header {
+    border: none;
+  }
+
+  .modal-confirm-footer {
+    border: none;
+  }
+
+  .btn-cancel {
+    color: #888888;
+    border-color: #888888;
+    &:hover {
+      background-color: #fff;
+      border-color: #fff;
+      color: #000;
+    }
+  }
+}

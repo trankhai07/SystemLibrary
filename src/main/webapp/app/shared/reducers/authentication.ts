@@ -5,9 +5,12 @@ import { serializeAxiosError } from './reducer.utils';
 
 import { AppThunk } from 'app/config/store';
 import { setLocale } from 'app/shared/reducers/locale';
+import { getEntityByUser } from 'app/entities/patron-account/patron-account.reducer';
 
-const AUTH_TOKEN_KEY = 'jhi-authenticationToken';
-
+export const AUTH_TOKEN_KEY = 'jhi-authenticationToken';
+export const ROLE_KEY = 'role';
+export const CARD_NUMBER = 'cardNumber';
+const LOCALE_KEY = 'locale';
 export const initialState = {
   loading: false,
   isAuthenticated: false,
@@ -27,7 +30,6 @@ export type AuthenticationState = Readonly<typeof initialState>;
 
 export const getSession = (): AppThunk => async (dispatch, getState) => {
   await dispatch(getAccount());
-
   const { account } = getState().authentication;
   if (account && account.langKey) {
     const langKey = Storage.session.get('locale', account.langKey);
@@ -65,7 +67,15 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
         Storage.local.set(AUTH_TOKEN_KEY, jwt);
       } else {
         Storage.session.set(AUTH_TOKEN_KEY, jwt);
+        console.log('Pass session');
       }
+      const res: any = await dispatch(getAccount());
+      const resCard: any = await dispatch(getEntityByUser());
+      const userLogin = res.payload.data;
+      const patron = resCard.payload.data;
+      Storage.session.set(ROLE_KEY, userLogin.authorities);
+      Storage.session.set(CARD_NUMBER, patron.cardNumber);
+      Storage.session.set(LOCALE_KEY, 'en');
     }
     dispatch(getSession());
   };
@@ -77,6 +87,8 @@ export const clearAuthToken = () => {
   if (Storage.session.get(AUTH_TOKEN_KEY)) {
     Storage.session.remove(AUTH_TOKEN_KEY);
   }
+  Storage.session.remove(ROLE_KEY);
+  Storage.session.remove(CARD_NUMBER);
 };
 
 export const logout: () => AppThunk = () => dispatch => {

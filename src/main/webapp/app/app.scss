@@ -1,9 +1,36 @@
 // Override Boostrap variables
 // Import Bootstrap source files from node_modules
 @import '~bootstrap/scss/bootstrap';
+
+@media screen and (max-width: 600px) {
+  :root {
+    --header-height: 100px;
+    --header-height-min: 80px;
+  }
+}
+
+/* Theme Colors */
+:root {
+  --accent-color: #dead6f;
+  --dark-color: #222222;
+  --light-dark-color: #727272;
+  --light-color: #fff;
+  --grey-color: #dbdbdb;
+  --light-grey-color: #fafafa;
+  --primary-color: #6995b1;
+  --light-primary-color: #eef1f3;
+}
+
+/* Fonts */
+:root {
+  --body-font: 'Chilanka', cursive;
+  --heading-font: 'Chilanka', cursive;
+  --secondary-font: 'Montserrat', sans-serif;
+}
 body {
   background: #fafafa;
   margin: 0;
+  font-family: Montserrat, -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 a {
@@ -14,6 +41,7 @@ a {
 * {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+
   &:after,
   &::before {
     -moz-box-sizing: border-box;
@@ -23,22 +51,44 @@ a {
 
 .app-container {
   box-sizing: border-box;
+  min-height: 100vh;
+
   .view-container {
+    background-color: rgb(247, 247, 247);
     width: 100%;
-    height: calc(100% - 40px);
-    overflow-y: auto;
-    overflow-x: hidden;
+    min-height: calc(100vh - 64px);
+    overflow: hidden;
     padding: 1rem;
-    .card {
-      padding: 1rem;
-    }
-    .view-routes {
-      height: 100%;
-      > div {
-        height: 100%;
+
+    .body-container {
+      padding-top: 20px;
+      padding-right: 30px;
+
+      .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .jh-card {
+        padding: 1rem;
+        overflow-y: auto;
+        height: calc(100vh - 175px);
       }
     }
   }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  background-color: #eceeef;
+}
+
+h2 {
+  color: #a0a6a8;
 }
 
 .fullscreen {
@@ -72,10 +122,12 @@ Custom button styles
   border-color: transparent;
   padding: 0.5rem;
   line-height: 1rem;
+
   &:hover {
     background-color: transparent;
     border-color: transparent;
   }
+
   &:focus {
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -222,6 +274,7 @@ Generic styles
 .no-margin {
   margin: 0px;
 }
+
 @mixin voffset($size) {
   @if $size== '' {
     .voffset {
@@ -308,5 +361,16 @@ http://stackoverflow.com/questions/23436430/bootstrap-3-input-group-100-width */
 .width-min {
   width: 1% !important;
 }
-
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
+  text-transform: capitalize;
+}
+a {
+  text-decoration: none;
+}
 /* jhipster-needle-scss-add-main JHipster will add new css style */

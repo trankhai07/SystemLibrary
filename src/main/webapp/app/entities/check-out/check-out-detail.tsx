@@ -57,15 +57,19 @@ export const CheckOutDetail = () => {
           </dt>
           <dd>{checkOutEntity.isReturned ? 'true' : 'false'}</dd>
           <dt>
-            <Translate contentKey="systemLibraryApp.checkOut.bookCopy">Book Copy</Translate>
+            <Translate contentKey="systemLibraryApp.bookCopy.bookTitle">Book Title</Translate>
           </dt>
-          <dd>{checkOutEntity.bookCopy ? checkOutEntity.bookCopy.id : ''}</dd>
+          <dd>{checkOutEntity.bookCopy?.book ? checkOutEntity.bookCopy.book.title : ''}</dd>
           <dt>
             <Translate contentKey="systemLibraryApp.checkOut.patronAccount">Patron Account</Translate>
           </dt>
           <dd>{checkOutEntity.patronAccount ? checkOutEntity.patronAccount.cardNumber : ''}</dd>
+          <dt>
+            <Translate contentKey="systemLibraryApp.patronAccount.userName">Username</Translate>
+          </dt>
+          <dd>{checkOutEntity.patronAccount?.user ? checkOutEntity.patronAccount.user.login : ''}</dd>
         </dl>
-        <Button tag={Link} to="/check-out" replace color="info" data-cy="entityDetailsBackButton">
+        <Button onClick={() => history.back()} replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}
           <span className="d-none d-md-inline">
             <Translate contentKey="entity.action.back">Back</Translate>

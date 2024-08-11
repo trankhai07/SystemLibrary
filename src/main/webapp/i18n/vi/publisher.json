@@ -5,13 +5,14 @@
         "title": "Publishers",
         "refreshListLabel": "Refresh list",
         "createLabel": "Thêm mới một Publisher",
+        "editLabel": "Chỉnh sửa một Publisher",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Publisher",
         "search": "Tìm Publisher",
         "notFound": "No Publishers found"
       },
-      "created": "Một Publisher mới được tạo với định danh {{ param }}",
-      "updated": "Một Publisher cập nhật với định danh {{ param }}",
-      "deleted": "Một Publisher đã xóa với định danh {{ param }}",
+      "created": "Nhà xuất bản được tạo thành công!",
+      "updated": "Nhà xuất bản được cập nhật thành công!",
+      "deleted": "Nhà xuất bản được xoá thành công!",
       "delete": {
         "question": "Bạn có chắc là muốn xóa Publisher {{ id }}?"
       },

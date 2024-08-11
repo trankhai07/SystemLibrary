@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Button, Input, InputGroup, FormGroup, Form, Row, Col, Table } from 'reactstrap';
+import {
+  Button,
+  Input,
+  InputGroup,
+  FormGroup,
+  Form,
+  Row,
+  Col,
+  Table,
+  Badge,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
+} from 'reactstrap';
 import { Translate, translate, getSortState, JhiPagination, JhiItemCount } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -10,7 +24,12 @@ import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-u
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IPatronAccount } from 'app/shared/model/patron-account.model';
-import { searchEntities, getEntities } from './patron-account.reducer';
+import { searchEntities, getEntities, getEntitiesNotEnough, getEntity, updateEntityUserStatus } from './patron-account.reducer';
+import InputSearch from 'app/components/input-search';
+import { Radio, RadioChangeEvent } from 'antd';
+import { Status } from 'app/shared/model/enumerations/status.model';
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import './style.scss';
 
 export const PatronAccount = () => {
   const dispatch = useAppDispatch();
@@ -24,11 +43,25 @@ export const PatronAccount = () => {
   );
 
   const patronAccountList = useAppSelector(state => state.patronAccount.entities);
+  const patronAccountEntity = useAppSelector(state => state.patronAccount.entity);
+  const [selectedCardNumber, setSelectedCardNumber] = useState(null);
+  const [statusUser, setStatusUser] = useState(false);
+  const updateSuccess = useAppSelector(state => state.patronAccount.updateSuccess);
+
   const loading = useAppSelector(state => state.patronAccount.loading);
   const totalItems = useAppSelector(state => state.patronAccount.totalItems);
+  const [dropdownOpen, setDropdownOpen] = useState({});
+  const [notCondition, setCondition] = useState('');
+
+  useEffect(() => {
+    if (updateSuccess) {
+      getAllEntities();
+    }
+  }, [updateSuccess]);
 
   const getAllEntities = () => {
     if (search) {
+      setCondition('');
       dispatch(
         searchEntities({
           query: search,
@@ -37,12 +70,19 @@ export const PatronAccount = () => {
           sort: `${paginationState.sort},${paginationState.order}`,
         })
       );
-    } else {
+    } else if (!search && !notCondition) {
       dispatch(
         getEntities({
           page: paginationState.activePage - 1,
           size: paginationState.itemsPerPage,
           sort: `${paginationState.sort},${paginationState.order}`,
+        })
+      );
+    } else if (!search && notCondition) {
+      dispatch(
+        getEntitiesNotEnough({
+          page: paginationState.activePage - 1,
+          size: paginationState.itemsPerPage,
         })
       );
     }
@@ -87,7 +127,7 @@ export const PatronAccount = () => {
 
   useEffect(() => {
     sortEntities();
-  }, [paginationState.activePage, paginationState.order, paginationState.sort, search]);
+  }, [paginationState.activePage, paginationState.order, paginationState.sort, search, notCondition]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -121,46 +161,60 @@ export const PatronAccount = () => {
   const handleSyncList = () => {
     sortEntities();
   };
+  const handleClick = value => {
+    if (notCondition === value) setCondition('');
+    else setCondition(value);
+  };
 
+  const toggleDropdown = index => {
+    setDropdownOpen(prevState => ({
+      ...prevState,
+      [index]: !prevState[index],
+    }));
+  };
+  useEffect(() => {
+    if (selectedCardNumber) {
+      dispatch(updateEntityUserStatus({ entity: patronAccountEntity, statusUser: statusUser, cardNumber: selectedCardNumber }));
+    }
+  }, [selectedCardNumber, statusUser]);
+
+  const handleSelect = (cardNumber: string, status: boolean) => {
+    if (cardNumber !== selectedCardNumber) setSelectedCardNumber(cardNumber);
+    if (status !== statusUser) setStatusUser(status);
+  };
   return (
     <div>
-      <h2 id="patron-account-heading" data-cy="PatronAccountHeading">
-        <Translate contentKey="systemLibraryApp.patronAccount.home.title">Patron Accounts</Translate>
-        <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="systemLibraryApp.patronAccount.home.refreshListLabel">Refresh List</Translate>
-          </Button>
-          <Link to="/patron-account/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="systemLibraryApp.patronAccount.home.createLabel">Create new Patron Account</Translate>
-          </Link>
+      <div id="menu-service-heading" data-cy="MenuServiceHeading">
+        <h2 id="patron-account-heading" data-cy="PatronAccountHeading">
+          <div className="d-flex gap-3 align-items-center">
+            <Translate contentKey="systemLibraryApp.patronAccount.home.title">Patron Accounts</Translate>
+          </div>
+        </h2>
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <div className="w-25">
+            <InputSearch name={'search'} onChange={handleSearch} defaultValue={search} />
+            <Button type="reset" className="input-group-addon input-clear" onClick={clear}>
+              <FontAwesomeIcon icon="trash" />
+            </Button>
+          </div>
+          <div>
+            <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+              <FontAwesomeIcon icon="sync" spin={loading} />{' '}
+              <Translate contentKey="systemLibraryApp.patronAccount.home.refreshListLabel">Refresh List</Translate>
+            </Button>
+          </div>
         </div>
-      </h2>
-      <Row>
-        <Col sm="12">
-          <Form onSubmit={startSearching}>
-            <FormGroup>
-              <InputGroup>
-                <Input
-                  type="text"
-                  name="search"
-                  defaultValue={search}
-                  onChange={handleSearch}
-                  placeholder={translate('systemLibraryApp.patronAccount.home.search')}
-                />
-                <Button className="input-group-addon">
-                  <FontAwesomeIcon icon="search" />
-                </Button>
-                <Button type="reset" className="input-group-addon" onClick={clear}>
-                  <FontAwesomeIcon icon="trash" />
-                </Button>
-              </InputGroup>
-            </FormGroup>
-          </Form>
-        </Col>
-      </Row>
+        <div className="d-flex justify-content-center">
+          <div className="d-flex align-items-center gap-3">
+            <p className="mb-0">Choose</p>
+            <Radio.Group value={notCondition} className="my-3">
+              <Radio.Button value={Status.Confirmed} onClick={() => handleClick(Status.Confirmed)}>
+                <Translate contentKey={`systemLibraryApp.patronAccount.notEnough`}>Not Enough Condition</Translate>
+              </Radio.Button>
+            </Radio.Group>
+          </div>
+        </div>
+      </div>
       <div className="table-responsive">
         {patronAccountList && patronAccountList.length > 0 ? (
           <Table responsive>
@@ -169,8 +223,14 @@ export const PatronAccount = () => {
                 <th className="hand" onClick={sort('cardNumber')}>
                   <Translate contentKey="systemLibraryApp.patronAccount.cardNumber">Card Number</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
+                <th className="hand" onClick={sort('user.login')}>
+                  <Translate contentKey="systemLibraryApp.patronAccount.userName">User Name</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
+                <th className="hand" onClick={sort('user.email')}>
+                  <Translate contentKey="systemLibraryApp.patronAccount.email">Email</Translate> <FontAwesomeIcon icon="sort" />
+                </th>
                 <th>
-                  <Translate contentKey="systemLibraryApp.patronAccount.user">User</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="systemLibraryApp.patronAccount.status">Status</Translate>
                 </th>
                 <th />
               </tr>
@@ -178,12 +238,29 @@ export const PatronAccount = () => {
             <tbody>
               {patronAccountList.map((patronAccount, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/patron-account/${patronAccount.cardNumber}`} color="link" size="sm">
-                      {patronAccount.cardNumber}
-                    </Button>
-                  </td>
+                  <td>{patronAccount.cardNumber}</td>
                   <td>{patronAccount.user ? patronAccount.user.login : ''}</td>
+                  <td>{patronAccount.user ? patronAccount.user.email : ''}</td>
+                  <td>
+                    <Dropdown isOpen={dropdownOpen[i] || false} toggle={() => toggleDropdown(i)} className="activation-dropdown">
+                      <Button className="activation-toggle" onClick={() => toggleDropdown(i)}>
+                        {patronAccount.user?.activated ? (
+                          <Badge color="success">{translate('global.form.active')}</Badge>
+                        ) : (
+                          <Badge color="danger">{translate('global.form.deactive')}</Badge>
+                        )}
+                        <FontAwesomeIcon icon={faCaretDown} className="ml-2" />
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownItem onClick={() => handleSelect(patronAccount.cardNumber, true)}>
+                          <Badge color="success">{translate('global.form.active')}</Badge>
+                        </DropdownItem>
+                        <DropdownItem onClick={() => handleSelect(patronAccount.cardNumber, false)}>
+                          <Badge color="danger">{translate('global.form.deactive')}</Badge>
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button
@@ -196,18 +273,6 @@ export const PatronAccount = () => {
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
-                        </span>
-                      </Button>
-                      <Button
-                        tag={Link}
-                        to={`/patron-account/${patronAccount.cardNumber}/edit?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`}
-                        color="primary"
-                        size="sm"
-                        data-cy="entityEditButton"
-                      >
-                        <FontAwesomeIcon icon="pencil-alt" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.edit">Edit</Translate>
                         </span>
                       </Button>
                       <Button

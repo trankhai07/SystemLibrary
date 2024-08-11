@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IAuthor } from 'app/shared/model/author.model';
 import { searchEntities, getEntities } from './author.reducer';
+import InputSearch from 'app/components/input-search';
 
 export const Author = () => {
   const dispatch = useAppDispatch();
@@ -126,41 +127,26 @@ export const Author = () => {
     <div>
       <h2 id="author-heading" data-cy="AuthorHeading">
         <Translate contentKey="systemLibraryApp.author.home.title">Authors</Translate>
-        <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="systemLibraryApp.author.home.refreshListLabel">Refresh List</Translate>
-          </Button>
-          <Link to="/author/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="systemLibraryApp.author.home.createLabel">Create new Author</Translate>
-          </Link>
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <div className="w-25">
+            <InputSearch name={'search'} onChange={handleSearch} defaultValue={search} />
+            <Button type="reset" className="input-group-addon input-clear" onClick={clear}>
+              <FontAwesomeIcon icon="trash" />
+            </Button>
+          </div>
+          <div>
+            <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+              <FontAwesomeIcon icon="sync" spin={loading} />{' '}
+              <Translate contentKey="systemLibraryApp.author.home.refreshListLabel">Refresh List</Translate>
+            </Button>
+            <Link to="/author/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+              <FontAwesomeIcon icon="plus" />
+              &nbsp;
+              <Translate contentKey="systemLibraryApp.author.home.createLabel">Create new Author</Translate>
+            </Link>
+          </div>
         </div>
       </h2>
-      <Row>
-        <Col sm="12">
-          <Form onSubmit={startSearching}>
-            <FormGroup>
-              <InputGroup>
-                <Input
-                  type="text"
-                  name="search"
-                  defaultValue={search}
-                  onChange={handleSearch}
-                  placeholder={translate('systemLibraryApp.author.home.search')}
-                />
-                <Button className="input-group-addon">
-                  <FontAwesomeIcon icon="search" />
-                </Button>
-                <Button type="reset" className="input-group-addon" onClick={clear}>
-                  <FontAwesomeIcon icon="trash" />
-                </Button>
-              </InputGroup>
-            </FormGroup>
-          </Form>
-        </Col>
-      </Row>
       <div className="table-responsive">
         {authorList && authorList.length > 0 ? (
           <Table responsive>

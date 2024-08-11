@@ -37,7 +37,7 @@ export const PatronAccountDetail = () => {
           </dt>
           <dd>{patronAccountEntity.user ? patronAccountEntity.user.login : ''}</dd>
         </dl>
-        <Button tag={Link} to="/patron-account" replace color="info" data-cy="entityDetailsBackButton">
+        <Button onClick={() => history.back()} replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}
           <span className="d-none d-md-inline">
             <Translate contentKey="entity.action.back">Back</Translate>

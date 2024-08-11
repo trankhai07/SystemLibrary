@@ -72,7 +72,11 @@ export const AuthorUpdate = () => {
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="systemLibraryApp.author.home.createOrEditLabel" data-cy="AuthorCreateUpdateHeading">
-            <Translate contentKey="systemLibraryApp.author.home.createOrEditLabel">Create or edit a Author</Translate>
+            {isNew ? (
+              <Translate contentKey="systemLibraryApp.author.home.createLabel">Create Author</Translate>
+            ) : (
+              <Translate contentKey="systemLibraryApp.author.home.editLabel">Edit Author</Translate>
+            )}
           </h2>
         </Col>
       </Row>
@@ -82,16 +86,6 @@ export const AuthorUpdate = () => {
             <p>Loading...</p>
           ) : (
             <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
-              {!isNew ? (
-                <ValidatedField
-                  name="id"
-                  required
-                  readOnly
-                  id="author-id"
-                  label={translate('global.field.id')}
-                  validate={{ required: true }}
-                />
-              ) : null}
               <ValidatedField
                 label={translate('systemLibraryApp.author.name')}
                 id="author-name"

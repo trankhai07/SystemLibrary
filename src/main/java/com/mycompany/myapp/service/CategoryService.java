@@ -14,6 +14,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +81,7 @@ public class CategoryService {
             Category result = categoryRepository.save(category);
             categorySearchRepository.index(result);
 
-            List<Book> bookList = bookRepository.findAllByCategoryId(category.getId());
+            List<Book> bookList = bookRepository.findAllByCategoryIdNoPageable(category.getId());
             for (Book book : bookList) {
                 bookSearchRepository.index(book);
                 if (bookRedisService.keyBookIdExists(book.getId())) bookRedisService.saveBooks(book);

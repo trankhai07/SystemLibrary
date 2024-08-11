@@ -1,5 +1,6 @@
 package com.mycompany.myapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -47,6 +48,7 @@ public class Book implements Serializable {
     @OneToMany(mappedBy = "book")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @org.springframework.data.annotation.Transient
+    @JsonIgnore
     @JsonIgnoreProperties(value = { "patronAccount", "book" }, allowSetters = true)
     private Set<WaitList> waitLists = new HashSet<>();
 

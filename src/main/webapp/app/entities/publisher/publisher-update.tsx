@@ -67,7 +67,11 @@ export const PublisherUpdate = () => {
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="systemLibraryApp.publisher.home.createOrEditLabel" data-cy="PublisherCreateUpdateHeading">
-            <Translate contentKey="systemLibraryApp.publisher.home.createOrEditLabel">Create or edit a Publisher</Translate>
+            {isNew ? (
+              <Translate contentKey="systemLibraryApp.publisher.home.createLabel">Create Publisher</Translate>
+            ) : (
+              <Translate contentKey="systemLibraryApp.publisher.home.editLabel">Edit a Publisher</Translate>
+            )}
           </h2>
         </Col>
       </Row>
@@ -77,16 +81,6 @@ export const PublisherUpdate = () => {
             <p>Loading...</p>
           ) : (
             <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
-              {!isNew ? (
-                <ValidatedField
-                  name="id"
-                  required
-                  readOnly
-                  id="publisher-id"
-                  label={translate('global.field.id')}
-                  validate={{ required: true }}
-                />
-              ) : null}
               <ValidatedField
                 label={translate('systemLibraryApp.publisher.name')}
                 id="publisher-name"

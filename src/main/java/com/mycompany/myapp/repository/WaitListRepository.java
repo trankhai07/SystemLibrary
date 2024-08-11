@@ -43,4 +43,7 @@ public interface WaitListRepository extends JpaRepository<WaitList, Long> {
     @Modifying
     @Query(value = "TRUNCATE TABLE wait_list", nativeQuery = true)
     void deleteAll();
+
+    @Query("select waitList from WaitList waitList where waitList.book.id =:bookId")
+    List<WaitList> findByBookId(@Param("bookId") Long bookId);
 }

@@ -7,6 +7,7 @@ import Book from './book';
 import BookDetail from './book-detail';
 import BookUpdate from './book-update';
 import BookDeleteDialog from './book-delete-dialog';
+import BookUpdateClient from './book-update-client';
 
 const BookRoutes = () => (
   <ErrorBoundaryRoutes>
@@ -16,6 +17,7 @@ const BookRoutes = () => (
       <Route index element={<BookDetail />} />
       <Route path="edit" element={<BookUpdate />} />
       <Route path="delete" element={<BookDeleteDialog />} />
+      <Route path="view" element={<BookUpdateClient />} />
     </Route>
   </ErrorBoundaryRoutes>
 );

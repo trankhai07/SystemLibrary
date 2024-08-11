@@ -52,8 +52,8 @@ public class WaitListService {
     public WaitList save(WaitList waitList) throws BadRequestException {
         log.debug("Request to save WaitList : {}", waitList);
         try {
-            WaitList result = waitListRepository.save(waitList);
             waitList.setCreatAt(Instant.now());
+            WaitList result = waitListRepository.save(waitList);
             if (result.getBook() != null && result.getPatronAccount() != null) waitListRedisService.add(
                 result.getBook(),
                 result.getPatronAccount()
@@ -82,7 +82,7 @@ public class WaitListService {
         if (!infoCheckOutList.isEmpty()) {
             for (InfoCheckOut infoCheckOut : infoCheckOutList) {
                 System.out.println(infoCheckOut.getEmail());
-                mailService.sendReturnBook(infoCheckOut);
+                mailService.sendBookAvailable(infoCheckOut);
             }
             waitListRedisService.delete(bookId);
         }

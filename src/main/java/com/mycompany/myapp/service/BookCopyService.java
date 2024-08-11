@@ -3,8 +3,10 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.domain.BookCopy;
 import com.mycompany.myapp.repository.BookCopyRepository;
 import com.mycompany.myapp.repository.search.BookCopySearchRepository;
+import com.mycompany.myapp.service.redis.BookRedisService;
 import io.undertow.util.BadRequestException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,15 +28,18 @@ public class BookCopyService {
 
     private final BookCopySearchRepository bookCopySearchRepository;
     private final WaitListService waitListService;
+    private final BookRedisService bookRedisService;
 
     public BookCopyService(
         BookCopyRepository bookCopyRepository,
         BookCopySearchRepository bookCopySearchRepository,
-        WaitListService waitListService
+        WaitListService waitListService,
+        BookRedisService bookRedisService
     ) {
         this.bookCopyRepository = bookCopyRepository;
         this.bookCopySearchRepository = bookCopySearchRepository;
         this.waitListService = waitListService;
+        this.bookRedisService = bookRedisService;
     }
 
     /**
@@ -44,16 +49,22 @@ public class BookCopyService {
      * @return the persisted entity.
      */
     public BookCopy save(BookCopy bookCopy) throws BadRequestException {
-        log.debug("Request to save BookCopy : {}", bookCopy);
-        if (
-            findPublishYearOfPublisher(bookCopy.getPublisher().getId(), bookCopy.getBook().getId(), bookCopy.getYearPublished()).isPresent()
-        ) throw new BadRequestException("Publish year existed!");
-        if (bookCopyRepository.checkBookAvailable(bookCopy.getBook().getId()).isEmpty()) waitListService.Notification(
-            bookCopy.getBook().getId()
-        );
-        BookCopy result = bookCopyRepository.save(bookCopy);
-        bookCopySearchRepository.index(result);
-        return result;
+        try {
+            log.debug("Request to save BookCopy : {}", bookCopy);
+            if (
+                findPublishYearOfPublisher(bookCopy.getPublisher().getId(), bookCopy.getBook().getId(), bookCopy.getYearPublished())
+                    .isPresent()
+            ) throw new BadRequestException("Publish year existed!");
+            if (bookCopyRepository.checkBookAvailable(bookCopy.getBook().getId()).isEmpty()) waitListService.Notification(
+                bookCopy.getBook().getId()
+            );
+            BookCopy result = bookCopyRepository.save(bookCopy);
+            bookRedisService.deleteBooksId(bookCopy.getBook().getId());
+            bookCopySearchRepository.index(result);
+            return result;
+        } catch (Exception e) {
+            throw new BadRequestException("Save book copy not successfully!");
+        }
     }
 
     /**
@@ -61,18 +72,33 @@ public class BookCopyService {
      *
      * @param bookCopy the entity to save.
      * @return the persisted entity.
+     *
      */
-    public BookCopy update(BookCopy bookCopy) {
-        log.debug("Request to update BookCopy : {}", bookCopy);
-        Optional<BookCopy> bookCopyOld = bookCopyRepository.findById(bookCopy.getId());
-        if (
-            bookCopyOld.get().getAmount() <= 0 &&
-            bookCopy.getAmount() > 0 &&
-            bookCopyRepository.checkBookAvailable(bookCopy.getBook().getId()).isEmpty()
-        ) waitListService.Notification(bookCopy.getBook().getId());
-        BookCopy result = bookCopyRepository.save(bookCopy);
-        bookCopySearchRepository.index(result);
-        return result;
+
+    public BookCopy update(BookCopy bookCopy) throws BadRequestException {
+        try {
+            log.debug("Request to update BookCopy : {}", bookCopy);
+            Optional<BookCopy> bookCopyOld = bookCopyRepository.findById(bookCopy.getId());
+            Optional<BookCopy> checkExist = findPublishYearOfPublisher(
+                bookCopy.getPublisher().getId(),
+                bookCopy.getBook().getId(),
+                bookCopy.getYearPublished()
+            );
+            if (checkExist.isPresent() && !Objects.equals(checkExist.get().getId(), bookCopy.getId())) throw new BadRequestException(
+                "Publish year existed!"
+            );
+            if (
+                bookCopyOld.get().getAmount() <= 0 &&
+                bookCopy.getAmount() > 0 &&
+                bookCopyRepository.checkBookAvailable(bookCopy.getBook().getId()).isEmpty()
+            ) waitListService.Notification(bookCopy.getBook().getId());
+            BookCopy result = bookCopyRepository.save(bookCopy);
+            bookRedisService.deleteBooksId(bookCopy.getBook().getId());
+            bookCopySearchRepository.index(result);
+            return result;
+        } catch (Exception e) {
+            throw new BadRequestException("Update book copy not successfully!");
+        }
     }
 
     /**
@@ -120,6 +146,12 @@ public class BookCopyService {
     public Page<BookCopy> findAll(Pageable pageable) {
         log.debug("Request to get all BookCopies");
         return bookCopyRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookCopy> findAllByBook(long bookId, Pageable pageable) {
+        log.debug("Request to get all BookCopies");
+        return bookCopyRepository.findAllByBook(bookId, pageable);
     }
 
     /**

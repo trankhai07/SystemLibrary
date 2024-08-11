@@ -170,8 +170,9 @@ public class BookResource {
         @RequestParam(value = "categoryId", required = false) long categoryId
     ) {
         log.debug("REST request to get a page of Books");
-        List<Book> books = bookService.findAllByCategoryId(categoryId, pageable);
-        return ResponseEntity.ok().body(books);
+        Page<Book> page = bookService.findAllByCategoryId(categoryId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -218,6 +219,18 @@ public class BookResource {
     ) {
         log.debug("REST request to search for a page of Books for query {}", query);
         Page<Book> page = bookService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/_search/books/category")
+    public ResponseEntity<List<Book>> searchBooksByCategory(
+        @RequestParam String query,
+        @RequestParam(value = "categoryId", required = false) long categoryId,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to search for a page of Books for query {}", query);
+        Page<Book> page = bookService.searchByCategory(query, categoryId, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

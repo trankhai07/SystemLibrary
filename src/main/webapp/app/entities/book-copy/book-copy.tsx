@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Input, InputGroup, FormGroup, Form, Row, Col, Table } from 'reactstrap';
-import { Translate, translate, getSortState, JhiPagination, JhiItemCount } from 'react-jhipster';
+import { Translate, translate, getSortState, JhiPagination, JhiItemCount, IPaginationBaseState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
@@ -11,16 +11,50 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IBookCopy } from 'app/shared/model/book-copy.model';
 import { searchEntities, getEntities } from './book-copy.reducer';
-
+import { EPath } from 'app/utils/constants/EPath';
+import InputSearch from 'app/components/input-search';
+export interface IPaginationStateExtend {
+  itemsPerPage: number;
+  sort: string;
+  order: string;
+  activePage: number;
+  bookId?: string | number;
+  status?: string;
+  categoryId?: string | number;
+}
+export const overridePaginationStateWithQueryParamsExtend = (
+  paginationBaseState: IPaginationBaseState,
+  locationSearch: string
+): IPaginationStateExtend => {
+  const params = new URLSearchParams(locationSearch);
+  const page = params.get('page');
+  const sort = params.get('sort');
+  const bookId = params.get('bookId');
+  if (page && sort) {
+    const sortSplit = sort.split(',');
+    paginationBaseState.activePage = +page;
+    paginationBaseState.sort = sortSplit[0];
+    paginationBaseState.order = sortSplit[1];
+  }
+  return bookId
+    ? {
+        ...paginationBaseState,
+        bookId,
+      }
+    : paginationBaseState;
+};
 export const BookCopy = () => {
   const dispatch = useAppDispatch();
 
   const location = useLocation();
   const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const page = params.get('page');
+  const bookId = params.get('bookId');
 
   const [search, setSearch] = useState('');
   const [paginationState, setPaginationState] = useState(
-    overridePaginationStateWithQueryParams(getSortState(location, ITEMS_PER_PAGE, 'id'), location.search)
+    overridePaginationStateWithQueryParamsExtend(getSortState(location, ITEMS_PER_PAGE, 'id'), location.search)
   );
 
   const bookCopyList = useAppSelector(state => state.bookCopy.entities);
@@ -40,6 +74,7 @@ export const BookCopy = () => {
     } else {
       dispatch(
         getEntities({
+          bookId: paginationState.bookId,
           page: paginationState.activePage - 1,
           size: paginationState.itemsPerPage,
           sort: `${paginationState.sort},${paginationState.order}`,
@@ -79,7 +114,7 @@ export const BookCopy = () => {
 
   const sortEntities = () => {
     getAllEntities();
-    const endURL = `?page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`;
+    const endURL = `?bookId=${paginationState.bookId}&page=${paginationState.activePage}&sort=${paginationState.sort},${paginationState.order}`;
     if (location.search !== endURL) {
       navigate(`${location.pathname}${endURL}`);
     }
@@ -87,21 +122,22 @@ export const BookCopy = () => {
 
   useEffect(() => {
     sortEntities();
-  }, [paginationState.activePage, paginationState.order, paginationState.sort, search]);
+  }, [paginationState.activePage, paginationState.order, paginationState.sort, search, paginationState.bookId]);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const page = params.get('page');
     const sort = params.get(SORT);
+    let data = {} as IPaginationStateExtend;
     if (page && sort) {
       const sortSplit = sort.split(',');
-      setPaginationState({
-        ...paginationState,
-        activePage: +page,
-        sort: sortSplit[0],
-        order: sortSplit[1],
-      });
+      data.activePage = +page;
+      data.sort = sortSplit[0];
+      data.order = sortSplit[1];
+      if (bookId) data.bookId = bookId;
     }
+    setPaginationState({
+      ...paginationState,
+      ...data,
+    });
   }, [location.search]);
 
   const sort = p => () => {
@@ -125,42 +161,36 @@ export const BookCopy = () => {
   return (
     <div>
       <h2 id="book-copy-heading" data-cy="BookCopyHeading">
-        <Translate contentKey="systemLibraryApp.bookCopy.home.title">Book Copies</Translate>
-        <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="systemLibraryApp.bookCopy.home.refreshListLabel">Refresh List</Translate>
-          </Button>
-          <Link to="/book-copy/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="systemLibraryApp.bookCopy.home.createLabel">Create new Book Copy</Translate>
-          </Link>
+        <div className="d-flex gap-3 align-items-center">
+          <FontAwesomeIcon icon="arrow-left" className="cursor-pointer" onClick={() => navigate(EPath.Book)} />
+          <Translate contentKey="systemLibraryApp.bookCopy.home.title">Book Copies</Translate>
+        </div>
+
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <div className="w-25">
+            <InputSearch name={'search'} onChange={handleSearch} defaultValue={search} />
+            <Button type="reset" className="input-group-addon input-clear" onClick={clear}>
+              <FontAwesomeIcon icon="trash" />
+            </Button>
+          </div>
+          <div>
+            <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+              <FontAwesomeIcon icon="sync" spin={loading} />{' '}
+              <Translate contentKey="systemLibraryApp.bookCopy.home.refreshListLabel">Refresh List</Translate>
+            </Button>
+            <Link
+              to={`${EPath.BookCopy}/new?bookId=${paginationState.bookId}`}
+              className="btn btn-primary jh-create-entity"
+              id="jh-create-entity"
+              data-cy="entityCreateButton"
+            >
+              <FontAwesomeIcon icon="plus" />
+              &nbsp;
+              <Translate contentKey="systemLibraryApp.bookCopy.home.createLabel">Create new Book Copy</Translate>
+            </Link>
+          </div>
         </div>
       </h2>
-      <Row>
-        <Col sm="12">
-          <Form onSubmit={startSearching}>
-            <FormGroup>
-              <InputGroup>
-                <Input
-                  type="text"
-                  name="search"
-                  defaultValue={search}
-                  onChange={handleSearch}
-                  placeholder={translate('systemLibraryApp.bookCopy.home.search')}
-                />
-                <Button className="input-group-addon">
-                  <FontAwesomeIcon icon="search" />
-                </Button>
-                <Button type="reset" className="input-group-addon" onClick={clear}>
-                  <FontAwesomeIcon icon="trash" />
-                </Button>
-              </InputGroup>
-            </FormGroup>
-          </Form>
-        </Col>
-      </Row>
       <div className="table-responsive">
         {bookCopyList && bookCopyList.length > 0 ? (
           <Table responsive>
@@ -169,41 +199,44 @@ export const BookCopy = () => {
                 <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="systemLibraryApp.bookCopy.id">ID</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('yearPublished')}>
+                <th>
+                  <Translate contentKey="systemLibraryApp.bookCopy.book">Book</Translate>
+                </th>
+                <th className="">
+                  <Translate contentKey="systemLibraryApp.bookCopy.image">Image</Translate>
+                </th>
+                <th>
+                  <Translate contentKey="systemLibraryApp.bookCopy.publisher">Publisher</Translate>
+                </th>
+                <th className="hand" onClick={sort('year_published')}>
                   <Translate contentKey="systemLibraryApp.bookCopy.yearPublished">Year Published</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th className="hand" onClick={sort('amount')}>
                   <Translate contentKey="systemLibraryApp.bookCopy.amount">Amount</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('image')}>
-                  <Translate contentKey="systemLibraryApp.bookCopy.image">Image</Translate> <FontAwesomeIcon icon="sort" />
+
+                <th className="">
+                  <Translate contentKey="systemLibraryApp.bookCopy.description">Description</Translate>
                 </th>
-                <th className="hand" onClick={sort('description')}>
-                  <Translate contentKey="systemLibraryApp.bookCopy.description">Description</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="systemLibraryApp.bookCopy.book">Book</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
-                <th>
-                  <Translate contentKey="systemLibraryApp.bookCopy.publisher">Publisher</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
+
                 <th />
               </tr>
             </thead>
             <tbody>
               {bookCopyList.map((bookCopy, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
+                  <td>{bookCopy.id}</td>
+                  <td>{bookCopy.book ? bookCopy.book.title : ''}</td>
                   <td>
-                    <Button tag={Link} to={`/book-copy/${bookCopy.id}`} color="link" size="sm">
-                      {bookCopy.id}
-                    </Button>
+                    {bookCopy.image && (
+                      <img style={{ width: '100px', height: '50px', objectFit: 'cover' }} src={bookCopy.image} alt="image_book_copy" />
+                    )}
                   </td>
+                  <td>{bookCopy.publisher ? bookCopy.publisher.name : ''}</td>
                   <td>{bookCopy.yearPublished}</td>
                   <td>{bookCopy.amount}</td>
-                  <td>{bookCopy.image}</td>
                   <td>{bookCopy.description}</td>
-                  <td>{bookCopy.book ? <Link to={`/book/${bookCopy.book.id}`}>{bookCopy.book.title}</Link> : ''}</td>
-                  <td>{bookCopy.publisher ? <Link to={`/publisher/${bookCopy.publisher.id}`}>{bookCopy.publisher.name}</Link> : ''}</td>
+
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/book-copy/${bookCopy.id}`} color="info" size="sm" data-cy="entityDetailsButton">

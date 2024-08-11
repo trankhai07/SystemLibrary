@@ -26,9 +26,34 @@ export const searchEntities = createAsyncThunk('book/search_entity', async ({ qu
 });
 
 export const getEntities = createAsyncThunk('book/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
+  const requestUrl = `${apiUrl}${
+    sort ? `?page=${page}&size=${size}&sort=${sort}&eagerload=true&` : '?'
+  }cacheBuster=${new Date().getTime()}`;
   return axios.get<IBook[]>(requestUrl);
 });
+
+type IBookQueryParams = IQueryParams & {
+  categoryId?: string | number;
+};
+
+export const getEntitiesByCategory = createAsyncThunk(
+  'book/fetch_entity_list',
+  async ({ page, size, sort, categoryId }: IBookQueryParams) => {
+    const requestUrl = `${apiUrl}/category${
+      sort ? `?categoryId=${categoryId}&page=${page}&size=${size}&sort=${sort}&eagerload=true&` : '?'
+    }cacheBuster=${new Date().getTime()}`;
+    return axios.get<IBook[]>(requestUrl);
+  }
+);
+export const searchEntitiesByCategory = createAsyncThunk(
+  'book/search_entity',
+  async ({ query, page, size, sort, categoryId }: IBookQueryParams) => {
+    const requestUrl = `${apiSearchUrl}/category?query=${query}&categoryId=${categoryId}${
+      sort ? `&page=${page}&size=${size}&sort=${sort}` : ''
+    }`;
+    return axios.get<IBook[]>(requestUrl);
+  }
+);
 
 export const getEntity = createAsyncThunk(
   'book/fetch_entity',
@@ -96,7 +121,7 @@ export const BookSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities, searchEntities), (state, action) => {
+      .addMatcher(isFulfilled(getEntities, searchEntities, getEntitiesByCategory, searchEntitiesByCategory), (state, action) => {
         const { data, headers } = action.payload;
 
         return {
@@ -112,7 +137,7 @@ export const BookSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity, searchEntities), state => {
+      .addMatcher(isPending(getEntities, getEntity, searchEntities, getEntitiesByCategory, searchEntitiesByCategory), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;

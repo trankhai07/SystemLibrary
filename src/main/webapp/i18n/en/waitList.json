@@ -9,8 +9,8 @@
         "search": "Search for Wait List",
         "notFound": "No Wait Lists found"
       },
-      "created": "A new Wait List is created with identifier {{ param }}",
-      "updated": "A Wait List is updated with identifier {{ param }}",
+      "created": "Notification will be sent your Email when the book is available",
+      "updated": "Notification will be sent your Email when the book is available",
       "deleted": "A Wait List is deleted with identifier {{ param }}",
       "delete": {
         "question": "Are you sure you want to delete Wait List {{ id }}?"

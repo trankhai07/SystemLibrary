@@ -6,9 +6,9 @@
       "createLabel": "Create a new user",
       "createOrEditLabel": "Create or edit a user"
     },
-    "created": "A new user is created with identifier {{ param }}",
-    "updated": "A user is updated with identifier {{ param }}",
-    "deleted": "A user is deleted with identifier {{ param }}",
+    "created": "User created successfully!",
+    "updated": "User updated successfully!",
+    "deleted": "User deleted successfully!",
     "delete": {
       "question": "Are you sure you want to delete user {{ login }}?"
     },

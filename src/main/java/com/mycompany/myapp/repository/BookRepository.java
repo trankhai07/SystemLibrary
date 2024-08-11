@@ -41,8 +41,27 @@ public interface BookRepository extends BookRepositoryWithBagRelationships, JpaR
     @Query("select book from Book book left join fetch book.category where book.id =:id")
     Optional<Book> findOneWithToOneRelationships(@Param("id") Long id);
 
-    @Query("select distinct book from Book book left join fetch book.category join fetch book.authors where book.category.id =:id")
-    List<Book> findAllByCategoryId(@Param("id") long categoryId);
+    @Query(
+        "select distinct book from Book book " +
+        "left join fetch book.category " +
+        "left join fetch book.authors " +
+        "left join fetch book.bookCopies " +
+        "where book.id = :id"
+    )
+    Optional<Book> findOne(@Param("id") Long id);
+
+    @EntityGraph(attributePaths = { "category", "authors" })
+    @Query("select book from Book book where book.id in :ids")
+    List<Book> findAllByIdWithAssociations(@Param("ids") List<Long> ids);
+
+    @Query(
+        value = "select book.id from Book book where book.category.id = :id",
+        countQuery = "select count(book) from Book book where book.category.id = :id"
+    )
+    Page<Long> findBookIdsByCategoryId(@Param("id") long categoryId, Pageable pageable);
+
+    @Query("select distinct book from Book book  join fetch book.category join fetch book.authors where book.category.id =:id")
+    List<Book> findAllByCategoryIdNoPageable(@Param("id") long categoryId);
 
     @Query("select distinct book from Book book join  book.authors author where author.id=:authorId")
     List<Book> findAllByAuthorId(@Param("authorId") long authorId);

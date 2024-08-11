@@ -1,0 +1,28 @@
+.single_file {
+  display: flex;
+  justify-content: center;
+
+  .wrapper_button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+
+    .button_upload {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .wrapper_img {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+
+.wrapper_edit {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}

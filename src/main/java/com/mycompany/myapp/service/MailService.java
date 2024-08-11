@@ -112,7 +112,13 @@ public class MailService {
     //    }
     @Async
     public void sendReturnBook(com.mycompany.myapp.service.dto.InfoCheckOut InfoCheckOut) {
-        log.debug("Sending password reset email to '{}'", InfoCheckOut.getEmail());
+        log.debug("Sending return book email to '{}'", InfoCheckOut.getEmail());
         sendEmailFromTemplate(InfoCheckOut, "mail/returnBook", "email.return.title");
+    }
+
+    @Async
+    public void sendBookAvailable(com.mycompany.myapp.service.dto.InfoCheckOut InfoCheckOut) {
+        log.debug("Sending book available email to '{}'", InfoCheckOut.getEmail());
+        sendEmailFromTemplate(InfoCheckOut, "mail/bookAvailable", "email.available.title");
     }
 }

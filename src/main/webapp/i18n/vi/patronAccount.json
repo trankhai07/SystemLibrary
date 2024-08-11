@@ -5,13 +5,14 @@
         "title": "Patron Accounts",
         "refreshListLabel": "Refresh list",
         "createLabel": "Thêm mới một Patron Account",
+        "editLabel": "Chỉnh sửa một Patron Account",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Patron Account",
         "search": "Tìm Patron Account",
         "notFound": "No Patron Accounts found"
       },
-      "created": "Một Patron Account mới được tạo với định danh {{ param }}",
-      "updated": "Một Patron Account cập nhật với định danh {{ param }}",
-      "deleted": "Một Patron Account đã xóa với định danh {{ param }}",
+      "created": "Patron Account được tạo thành công!",
+      "updated": "Patron Account được cập nhật thành công!",
+      "deleted": "Patron Account được xoá thành công!",
       "delete": {
         "question": "Bạn có chắc là muốn xóa Patron Account {{ id }}?"
       },
@@ -20,9 +21,13 @@
       },
       "cardNumber": "Card Number",
       "user": "User",
+      "userName": "Tên tài khoản",
+      "email": "Email",
+      "status": "Trạng thái",
       "notification": "Notification",
       "waitList": "Wait List",
-      "checkOut": "Check Out"
+      "checkOut": "Check Out",
+      "notEnough": "Không đủ điều kiện"
     }
   }
 }

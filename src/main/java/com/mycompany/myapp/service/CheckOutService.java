@@ -59,11 +59,12 @@ public class CheckOutService {
     public CheckOut save(CheckOut checkOut) throws BadRequestException {
         log.debug("Request to save CheckOut : {}", checkOut);
         Collection<String> roles = SecurityUtils.getCurrentUserRoles();
-        if (checkOut.getStatus().equals(Status.Confirmed) && checkOut.getEndTime().compareTo(Instant.now()) <= 0) {
-            throw new BadRequestException("End time is less than current time!");
-        }
-        if (roles.contains(AuthoritiesConstants.USER)) {
+        if (roles.contains(AuthoritiesConstants.USER) || roles.contains(AuthoritiesConstants.ADMIN)) {
             checkOut.setStatus(Status.Pending);
+            checkOut.setIsReturned(false);
+        }
+        if (!checkOut.getStatus().equals(Status.Refused) && checkOut.getEndTime().compareTo(Instant.now()) <= 0) {
+            throw new BadRequestException("End time is less than current time!");
         }
         checkOut.setStartTime(Instant.now());
         CheckOut result = checkOutRepository.save(checkOut);
@@ -81,30 +82,38 @@ public class CheckOutService {
         log.debug("Request to update CheckOut : {}", checkOut);
         try {
             Collection<String> roles = SecurityUtils.getCurrentUserRoles();
-            if (checkOut.getStatus().equals(Status.Confirmed) && checkOut.getEndTime().compareTo(Instant.now()) <= 0) {
+            Optional<CheckOut> checkOutOld = checkOutRepository.findById(checkOut.getId());
+
+            if (
+                !checkOutOld.get().getStatus().equals(Status.Confirmed) &&
+                checkOut.getStatus().equals(Status.Confirmed) &&
+                checkOut.getEndTime().compareTo(Instant.now()) <= 0
+            ) {
                 throw new BadRequestException("End time is less than current time!");
             }
-            BookCopy bookCopy = checkOut.getBookCopy();
-            if (roles.contains(AuthoritiesConstants.ADMIN) && checkOut.getStatus().equals(Status.Confirmed) && !checkOut.getIsReturned()) {
-                checkOut.setStartTime(Instant.now());
-                if (checkOut.getBookCopy().getAmount() <= 0) throw new BadRequestException("The book is no longer available!");
-                bookCopy.setAmount(bookCopy.getAmount() - 1);
-                checkOut.setBookCopy(bookCopyRepository.save(bookCopy));
-                checkOutRedisService.saveCheckOutByPatron(checkOut);
+            Optional<BookCopy> bookCopy = bookCopyRepository.findById(checkOut.getBookCopy().getId());
+            if (roles.contains(AuthoritiesConstants.ADMIN) && checkOut.getStatus().equals(Status.Confirmed)) {
+                if (!checkOut.getIsReturned()) {
+                    checkOut.setStartTime(Instant.now());
+                    if (checkOut.getBookCopy().getAmount() <= 0) throw new BadRequestException("The book is no longer available!");
+                    bookCopy.get().setAmount(bookCopy.get().getAmount() - 1);
+                    checkOut.setBookCopy(bookCopyRepository.save(bookCopy.get()));
+                    checkOutRedisService.saveCheckOutByPatron(checkOut);
+                } else checkOutRedisService.deleteCheckOutByKey(checkOut);
             }
             if (checkOut.getIsReturned()) {
-                bookCopy.setAmount(bookCopy.getAmount() + 1);
-                if (bookCopyRepository.checkBookAvailable(bookCopy.getBook().getId()).isEmpty()) waitListService.Notification(
-                    bookCopy.getBook().getId()
+                bookCopy.get().setAmount(bookCopy.get().getAmount() + 1);
+                if (bookCopyRepository.checkBookAvailable(bookCopy.get().getBook().getId()).isEmpty()) waitListService.Notification(
+                    bookCopy.get().getBook().getId()
                 );
-                bookCopyRepository.save(bookCopy);
+                bookCopyRepository.save(bookCopy.get());
             }
             CheckOut result = checkOutRepository.save(checkOut);
             checkOutSearchRepository.index(result);
             return result;
         } catch (Exception e) {
             checkOutRedisService.deleteCheckOutByKey(checkOut);
-            throw new BadRequestException("Update Checkout not successfully!");
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -156,9 +165,15 @@ public class CheckOutService {
     }
 
     @Transactional(readOnly = true)
-    public List<CheckOut> findCheckoutByStatus(String status) {
-        log.debug("Request to get all CheckoutByStatus");
-        return checkOutRepository.findCheckoutByStatus(status);
+    public Page<CheckOut> findCheckoutByStatus(Status status, Pageable pageable) {
+        log.debug("Request to get all CheckOuts by Status");
+        return checkOutRepository.findCheckOutByStatus(status, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CheckOut> findCheckOutByStatusAndReturn(String cardNumber, Status status, boolean returned) {
+        log.debug("Request to get all CheckOuts by Status");
+        return checkOutRepository.findCheckOutByStatusAndReturn(cardNumber, status, returned);
     }
 
     @Transactional(readOnly = true)

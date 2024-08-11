@@ -6,9 +6,9 @@
       "createLabel": "Tạo tài khoản mới",
       "createOrEditLabel": "Tạo hoặc sửa tài khoản"
     },
-    "created": "Một tài khoản mới đã được tạo với định danh {{ param }}",
-    "updated": "Một tài khoản đã được cập nhật với định danh {{ param }}",
-    "deleted": "Một tài khoản đã bị xóa với định danh {{ param }}",
+    "created": "Một tài khoản mới đã được tạo thành công!",
+    "updated": "Một tài khoản đã được cập nhật thành công!",
+    "deleted": "Một tài khoản đã bị xóa thành công!",
     "delete": {
       "question": "Bạn có chắc chắn muốn xóa tài khoản {{ login }}?"
     },

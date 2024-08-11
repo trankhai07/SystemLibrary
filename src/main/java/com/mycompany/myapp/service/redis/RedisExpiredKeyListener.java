@@ -2,7 +2,6 @@ package com.mycompany.myapp.service.redis;
 
 import com.mycompany.myapp.service.MailService;
 import com.mycompany.myapp.service.dto.InfoCheckOut;
-import java.util.Map;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

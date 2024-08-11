@@ -17,6 +17,7 @@ const initialState: EntityState<IPatronAccount> = {
 
 const apiUrl = 'api/patron-accounts';
 const apiSearchUrl = 'api/_search/patron-accounts';
+const apiNotEnoughUrl = 'api/patron-accounts/not-enough-condition';
 
 // Actions
 
@@ -29,6 +30,10 @@ export const getEntities = createAsyncThunk('patronAccount/fetch_entity_list', a
   const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
   return axios.get<IPatronAccount[]>(requestUrl);
 });
+export const getEntitiesNotEnough = createAsyncThunk('patronAccount/fetch_entity_list_not_enough', async ({ page, size }: IQueryParams) => {
+  const requestUrl = `${apiNotEnoughUrl}${`?page=${page}&size=${size}&`}cacheBuster=${new Date().getTime()}`;
+  return axios.get<IPatronAccount[]>(requestUrl);
+});
 
 export const getEntity = createAsyncThunk(
   'patronAccount/fetch_entity',
@@ -39,6 +44,14 @@ export const getEntity = createAsyncThunk(
   { serializeError: serializeAxiosError }
 );
 
+export const getEntityByUser = createAsyncThunk(
+  'patronAccount/fetch_entity',
+  async () => {
+    const requestUrl = `${apiUrl}/user`;
+    return axios.get<IPatronAccount>(requestUrl);
+  },
+  { serializeError: serializeAxiosError }
+);
 export const createEntity = createAsyncThunk(
   'patronAccount/create_entity',
   async (entity: IPatronAccount, thunkAPI) => {
@@ -54,6 +67,18 @@ export const updateEntity = createAsyncThunk(
   async (entity: IPatronAccount, thunkAPI) => {
     const result = await axios.put<IPatronAccount>(`${apiUrl}/${entity.cardNumber}`, cleanEntity(entity));
     thunkAPI.dispatch(getEntities({}));
+    return result;
+  },
+  { serializeError: serializeAxiosError }
+);
+
+export const updateEntityUserStatus = createAsyncThunk(
+  'patronAccount/update_entity_user_status',
+  async (params: { entity: IPatronAccount; statusUser: boolean; cardNumber: string }, thunkAPI) => {
+    const result = await axios.put<IPatronAccount>(
+      `${apiUrl}-status/${params.cardNumber}?activated=${params.statusUser}`,
+      cleanEntity(params.entity)
+    );
     return result;
   },
   { serializeError: serializeAxiosError }
@@ -87,16 +112,16 @@ export const PatronAccountSlice = createEntitySlice({
   initialState,
   extraReducers(builder) {
     builder
-      .addCase(getEntity.fulfilled, (state, action) => {
-        state.loading = false;
-        state.entity = action.payload.data;
-      })
       .addCase(deleteEntity.fulfilled, state => {
         state.updating = false;
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities, searchEntities), (state, action) => {
+      .addMatcher(isFulfilled(getEntityByUser, getEntity), (state, action) => {
+        state.loading = false;
+        state.entity = action.payload.data;
+      })
+      .addMatcher(isFulfilled(getEntities, searchEntities, getEntitiesNotEnough), (state, action) => {
         const { data, headers } = action.payload;
 
         return {
@@ -106,18 +131,18 @@ export const PatronAccountSlice = createEntitySlice({
           totalItems: parseInt(headers['x-total-count'], 10),
         };
       })
-      .addMatcher(isFulfilled(createEntity, updateEntity, partialUpdateEntity), (state, action) => {
+      .addMatcher(isFulfilled(createEntity, updateEntity, updateEntityUserStatus, partialUpdateEntity), (state, action) => {
         state.updating = false;
         state.loading = false;
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity, searchEntities), state => {
+      .addMatcher(isPending(getEntities, getEntity, searchEntities, getEntitiesNotEnough), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;
       })
-      .addMatcher(isPending(createEntity, updateEntity, partialUpdateEntity, deleteEntity), state => {
+      .addMatcher(isPending(createEntity, updateEntity, partialUpdateEntity, updateEntityUserStatus, deleteEntity), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.updating = true;

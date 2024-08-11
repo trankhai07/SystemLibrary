@@ -1,7 +1,5 @@
 package com.mycompany.myapp.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 import com.mycompany.myapp.domain.BookCopy;
 import com.mycompany.myapp.repository.BookCopyRepository;
 import com.mycompany.myapp.service.BookCopyService;
@@ -12,14 +10,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -84,7 +80,7 @@ public class BookCopyResource {
     public ResponseEntity<BookCopy> updateBookCopy(
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody BookCopy bookCopy
-    ) throws URISyntaxException {
+    ) throws URISyntaxException, BadRequestException {
         log.debug("REST request to update BookCopy : {}, {}", id, bookCopy);
         if (bookCopy.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -183,14 +179,28 @@ public class BookCopyResource {
     }
 
     @GetMapping("/book-copies/publish-year")
-    public ResponseEntity<BookCopy> getBookCopyPublishYear(
-        @RequestParam(value = "PublisherId", required = false) long publisherId,
-        @RequestParam(value = "BookId", required = false) long bookId,
-        @RequestParam(value = "Year", required = false) long year
+    public BookCopy getBookCopyPublishYear(
+        @RequestParam(value = "publisherId", required = false) long publisherId,
+        @RequestParam(value = "bookId", required = false) long bookId,
+        @RequestParam(value = "year", required = false) long year
     ) {
         log.debug("REST request to get BookCopy by year: {}", year);
         Optional<BookCopy> bookCopy = bookCopyService.findPublishYearOfPublisher(publisherId, bookId, year);
-        return ResponseUtil.wrapOrNotFound(bookCopy);
+        return bookCopy.orElseGet(BookCopy::new);
+    }
+
+    @GetMapping("/book-copies/book")
+    public ResponseEntity<List<BookCopy>> getAllBookCopiesByBook(
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        @RequestParam(value = "bookId", required = false, defaultValue = "-1") long bookId
+    ) {
+        log.debug("REST request to get a page of BookCopies");
+        if (bookId == -1) {
+            return null;
+        }
+        Page<BookCopy> page = bookCopyService.findAllByBook(bookId, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**

@@ -22,7 +22,13 @@
       "startTime": "Start Time",
       "endTime": "End Time",
       "status": "Status",
-      "isReturned": "Is Returned",
+      "Confirmed": "Confirmed",
+      "Pending": "Pending",
+      "Refused": "Refused",
+      "Canceled": "Canceled",
+      "isReturned": "Returned",
+      "clientBorrow": "Manage Borrowed Books",
+      "clientReturn": "Manage Returned Books",
       "bookCopy": "Book Copy",
       "patronAccount": "Patron Account"
     }

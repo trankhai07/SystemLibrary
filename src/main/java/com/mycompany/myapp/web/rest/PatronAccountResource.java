@@ -4,6 +4,7 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 
 import com.mycompany.myapp.domain.PatronAccount;
 import com.mycompany.myapp.repository.PatronAccountRepository;
+import com.mycompany.myapp.security.SecurityUtils;
 import com.mycompany.myapp.service.PatronAccountService;
 import com.mycompany.myapp.service.dto.AdminUserDTO;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -156,21 +157,19 @@ public class PatronAccountResource {
         @RequestParam(required = false, defaultValue = "false") boolean eagerload
     ) {
         log.debug("REST request to get a page of PatronAccounts");
-        Page<PatronAccount> page;
-        if (eagerload) {
-            page = patronAccountService.findAllWithEagerRelationships(pageable);
-        } else {
-            page = patronAccountService.findAll(pageable);
-        }
+        Page<PatronAccount> page = patronAccountService.findAllUser(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     @GetMapping("/patron-accounts/not-enough-condition")
-    public ResponseEntity<List<PatronAccount>> getAllPatronAccountsNotEnoughCondition() {
+    public ResponseEntity<List<PatronAccount>> getAllPatronAccountsNotEnoughCondition(
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
         log.debug("REST request to get a page of PatronAccountsNotEnoughCondition");
-        List<PatronAccount> patronAccounts = patronAccountService.listPatronNotEnoughCondition();
-        return ResponseEntity.ok().body(patronAccounts);
+        Page<PatronAccount> page = patronAccountService.listPatronNotEnoughCondition(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -183,6 +182,14 @@ public class PatronAccountResource {
     public ResponseEntity<PatronAccount> getPatronAccount(@PathVariable String id) {
         log.debug("REST request to get PatronAccount : {}", id);
         Optional<PatronAccount> patronAccount = patronAccountService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(patronAccount);
+    }
+
+    @GetMapping("/patron-accounts/user")
+    public ResponseEntity<PatronAccount> getPatronAccountByUserLogin() {
+        Optional<String> username = SecurityUtils.getCurrentUserLogin();
+        log.debug("REST request to get PatronAccount : {}", username.get());
+        Optional<PatronAccount> patronAccount = patronAccountService.findOneByUserLogin(username.get());
         return ResponseUtil.wrapOrNotFound(patronAccount);
     }
 

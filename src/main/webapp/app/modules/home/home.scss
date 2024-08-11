@@ -8,3 +8,141 @@ Main page styles
   background: url('../../../content/images/jhipster_family_member_0.svg') no-repeat center top;
   background-size: contain;
 }
+.search-book-client {
+  display: flex;
+  width: 40%;
+}
+
+button.filter-button {
+  letter-spacing: 0.02125rem;
+  border: none;
+  border-bottom: 2px solid #d9d9d8;
+  background: transparent;
+  text-transform: uppercase;
+  font-size: 1.0625rem;
+  transition: all 0.3s ease-in;
+}
+
+button.filter-button.active,
+button.filter-button:hover {
+  border-bottom: 2px solid #dead6f;
+}
+
+.section-header {
+  margin-top: 10px;
+  margin-bottom: 60px;
+}
+
+h3 {
+  font-size: calc(0.7rem + 0.6vw);
+}
+
+.isotope-container.row {
+  --bs-gutter-x: 2.5rem;
+  --bs-gutter-y: 3.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+
+.book-detatil:hover {
+  color: inherit;
+  background-color: transparent;
+}
+
+.hover-effect {
+  border: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(13, 13, 13, 0.05);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.hover-effect:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-10px);
+}
+.img-fluid {
+  object-fit: cover;
+  height: 275px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.col-4-custom {
+  width: 25%;
+  max-width: 25%;
+  flex: 0 0 25%;
+}
+
+.card-title.book {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.card-info-type {
+  margin-bottom: 25px;
+}
+
+.card-info-type span:first-child {
+  font-weight: 600;
+}
+.card-info-type span:last-child {
+  font-weight: 350;
+}
+
+.card-info-author {
+  display: flex;
+  justify-content: left;
+  margin-bottom: 10px;
+}
+
+.card-info-key {
+  font-weight: 600;
+}
+
+.card-info-value {
+  margin-left: 10px;
+}
+.card-info-value span {
+  font-weight: 350;
+}
+
+.card-body {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+@media screen and (max-width: 991px) {
+  /* offcanvas menu */
+  .offcanvas-body .nav-item {
+    font-weight: 700;
+    border-bottom: 1px solid #d1d1d1;
+  }
+
+  .offcanvas-body .filter-categories {
+    width: 100%;
+    margin-bottom: 20px !important;
+    border: 1px solid #d1d1d1 !important;
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  /* dropdown-menu */
+  .dropdown-menu {
+    padding: 0;
+    border: none;
+    line-height: 1.4;
+    font-size: 0.9em;
+  }
+
+  .dropdown-menu a {
+    padding-left: 0;
+  }
+
+  .dropdown-toggle::after {
+    position: absolute;
+    right: 0;
+    top: 21px;
+  }
+}

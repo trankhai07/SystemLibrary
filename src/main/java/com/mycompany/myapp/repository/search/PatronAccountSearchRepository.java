@@ -1,32 +1,20 @@
 package com.mycompany.myapp.repository.search;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import com.mycompany.myapp.domain.Book;
 import com.mycompany.myapp.domain.PatronAccount;
 import com.mycompany.myapp.repository.PatronAccountRepository;
 import java.util.List;
-import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.sort.SortBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Spring Data Elasticsearch repository for the {@link PatronAccount} entity.
@@ -46,23 +34,32 @@ class PatronAccountSearchRepositoryInternalImpl implements PatronAccountSearchRe
 
     private final ElasticsearchRestTemplate elasticsearchTemplate;
     private final PatronAccountRepository repository;
+    private final SearchUtil searchUtil;
 
-    PatronAccountSearchRepositoryInternalImpl(ElasticsearchRestTemplate elasticsearchTemplate, PatronAccountRepository repository) {
+    PatronAccountSearchRepositoryInternalImpl(
+        ElasticsearchRestTemplate elasticsearchTemplate,
+        PatronAccountRepository repository,
+        SearchUtil searchUtil
+    ) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.repository = repository;
+        this.searchUtil = searchUtil;
     }
 
     @Override
     public Page<PatronAccount> search(String query, Pageable pageable) {
         BoolQueryBuilder boolQuery = QueryBuilders
             .boolQuery()
-            .should(QueryBuilders.matchQuery("cardNumber", query).fuzziness("AUTO"))
-            .should(QueryBuilders.matchQuery("user.login", query).fuzziness("AUTO"))
-            .should(QueryBuilders.matchQuery("user.email", query).fuzziness("AUTO"))
-            .should(QueryBuilders.matchQuery("user.lastName", query).fuzziness("AUTO"))
-            .should(QueryBuilders.matchQuery("user.firstName", query).fuzziness("AUTO"));
+            .should(QueryBuilders.matchPhrasePrefixQuery("cardNumber", query))
+            .should(QueryBuilders.matchPhrasePrefixQuery("user.login", query))
+            .should(QueryBuilders.matchPhrasePrefixQuery("user.email", query))
+            .should(QueryBuilders.matchPhrasePrefixQuery("user.lastName", query))
+            .should(QueryBuilders.matchPhrasePrefixQuery("user.firstName", query));
 
-        Query searchQuery = new NativeSearchQueryBuilder().withQuery(boolQuery).withPageable(pageable).build();
+        Query searchQuery = new NativeSearchQueryBuilder()
+            .withQuery(boolQuery)
+            .withPageable(searchUtil.pageableWithModifiedSort(pageable))
+            .build();
 
         return search(searchQuery);
     }

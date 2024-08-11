@@ -5,13 +5,14 @@
         "title": "Book Copies",
         "refreshListLabel": "Refresh list",
         "createLabel": "Thêm mới một Book Copy",
+        "editLabel": "Chỉnh sửa một Book Copy",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Book Copy",
         "search": "Tìm Book Copy",
         "notFound": "No Book Copies found"
       },
-      "created": "Một Book Copy mới được tạo với định danh {{ param }}",
-      "updated": "Một Book Copy cập nhật với định danh {{ param }}",
-      "deleted": "Một Book Copy đã xóa với định danh {{ param }}",
+      "created": "Sách sao chép được tạo thành công!",
+      "updated": "Sách sao chép được cập nhật thành công!",
+      "deleted": "Sách sao chép được xoá thành công!",
       "delete": {
         "question": "Bạn có chắc là muốn xóa Book Copy {{ id }}?"
       },
@@ -25,7 +26,8 @@
       "description": "Description",
       "checkOut": "Check Out",
       "book": "Book",
-      "publisher": "Publisher"
+      "publisher": "Publisher",
+      "bookTitle": "Chủ đề sách"
     }
   }
 }

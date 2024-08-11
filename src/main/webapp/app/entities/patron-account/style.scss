@@ -1,0 +1,134 @@
+%defaultColumn {
+  overflow: hidden;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+}
+
+.stt {
+  @extend %defaultColumn;
+  min-width: 70px;
+  max-width: 70px;
+}
+
+.email {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.email {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.username {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.position {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.name {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.phoneNumber {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.hotel {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.id-hotel {
+  @extend %defaultColumn;
+  min-width: 150px;
+  max-width: 150px;
+}
+
+.activated {
+  @extend %defaultColumn;
+  min-width: 150px;
+  max-width: 150px;
+}
+
+.createdDate {
+  @extend %defaultColumn;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.authorities {
+  @extend %defaultColumn;
+  min-width: 150px;
+  max-width: 150px;
+}
+
+.field-password {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  position: relative;
+
+  .form-control {
+    padding-right: 40px;
+  }
+
+  .icon-in-password {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    cursor: pointer;
+  }
+}
+
+.activation-dropdown {
+  position: relative;
+  border-bottom: 0px solid #dee2e6;
+  border-top: 0px solid #dee2e6;
+}
+
+.activation-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  background-color: white;
+  border: none;
+  appearance: none;
+}
+
+.activation-toggle:active,
+.activation-toggle:hover,
+.activation-toggle:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: white;
+}
+
+.activation-dropdown .dropdown-menu {
+  min-width: auto;
+  width: fit-content;
+  top: auto !important;
+  left: auto !important;
+}
+.activation-dropdown .dropdown-menu .dropdown-item:active {
+  background-color: #dee2e6 !important;
+  color: black;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+  color: #a9b1ba;
+}

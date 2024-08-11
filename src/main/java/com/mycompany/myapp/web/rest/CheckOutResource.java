@@ -147,28 +147,33 @@ public class CheckOutResource {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of checkOuts in body.
      */
+    //    @GetMapping("/check-outs")
+    //    public ResponseEntity<List<CheckOut>> getAllCheckOuts(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    //        log.debug("REST request to get a page of CheckOuts");
+    //        Page<CheckOut> page = checkOutService.findAll(pageable);
+    //        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+    //        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    //    }
     @GetMapping("/check-outs")
-    public ResponseEntity<List<CheckOut>> getAllCheckOuts(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+    public ResponseEntity<List<CheckOut>> getAllCheckOutsByStatus(
+        @RequestParam(value = "status", required = false) Status status,
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable
+    ) {
         log.debug("REST request to get a page of CheckOuts");
-        Page<CheckOut> page = checkOutService.findAll(pageable);
+        Page<CheckOut> page = checkOutService.findCheckoutByStatus(status, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    @GetMapping("/check-outs/status")
-    public ResponseEntity<List<CheckOut>> getAllCheckOutsByStatus(@RequestParam(value = "Status", required = false) Status status) {
-        log.debug("REST request to get a page of CheckOuts");
-        List<CheckOut> checkOuts = checkOutService.findCheckoutByStatus(status.toString());
-        return ResponseEntity.ok().body(checkOuts);
-    }
-
-    @GetMapping("/check-outs/patron-account")
+    @GetMapping("/check-outs-client")
     public ResponseEntity<List<CheckOut>> getAllCheckOutsByPatronAccount(
-        @RequestParam(value = "patronNumber", required = false) String patronNumber
+        @RequestParam(value = "cardNumber", required = false) String cardNumber,
+        @RequestParam(value = "status", required = false) Status status,
+        @RequestParam(value = "returned", required = false) boolean returned
     ) {
         log.debug("REST request to get a page of CheckOuts");
-        List<CheckOut> checkOuts = checkOutService.findCheckoutByPatronAccount(patronNumber.trim());
-        return ResponseEntity.ok().body(checkOuts);
+        List<CheckOut> page = checkOutService.findCheckOutByStatusAndReturn(cardNumber.trim(), status, returned);
+        return ResponseEntity.ok().body(page);
     }
 
     /**

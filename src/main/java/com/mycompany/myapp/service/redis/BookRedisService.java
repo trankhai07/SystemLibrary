@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,35 +18,51 @@ import org.springframework.stereotype.Service;
 public class BookRedisService {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final String KEY_PREFIX = "Book";
+    private final String KEY_PREFIX = "BookAll";
     private final String KEY_DETAIL = "BookDetail";
 
     public BookRedisService(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
-    public void saveBooksByCategoryId(long categoryId, List<Book> books) {
+    public String createKey(Pageable pageable, long total, long categoryId) {
+        String page = String.valueOf(pageable.getPageNumber());
+        String size = String.valueOf(pageable.getPageSize());
+        Sort sort = pageable.getSort();
+        String sortString = sort.toString();
+        return KEY_PREFIX + ":" + categoryId + ":" + page + ":" + size + ":" + sortString + ":" + total;
+    }
+
+    public String createKeyCheck(Pageable pageable, long categoryId) {
+        String page = String.valueOf(pageable.getPageNumber());
+        String size = String.valueOf(pageable.getPageSize());
+        Sort sort = pageable.getSort();
+        String sortString = sort.toString();
+        return KEY_PREFIX + ":" + categoryId + ":" + page + ":" + size + ":" + sortString;
+    }
+
+    public void saveBooksByCategoryId(long categoryId, long total, Pageable pageable, List<Book> books) {
         try {
-            String key = KEY_PREFIX + ":" + categoryId;
+            String key = createKey(pageable, total, categoryId);
             redisTemplate.opsForList().rightPushAll(key, books.toArray());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public boolean keyExists(long categoryId) {
+    public Set<String> keyExists(long categoryId, Pageable pageable) {
         try {
-            String key = KEY_PREFIX + ":" + categoryId;
-            return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+            String key = createKeyCheck(pageable, categoryId) + ":*";
+            return redisTemplate.keys(key);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
-    public List<Book> getBooksByCategoryId(long categoryId) {
+    public List<Book> getBooksByCategoryId(long categoryId, long total, Pageable pageable) {
         try {
-            String key = KEY_PREFIX + ":" + categoryId;
+            String key = createKey(pageable, total, categoryId);
             List<Object> bookObjects = redisTemplate.opsForList().range(key, 0, -1);
             return (List<Book>) (List<?>) bookObjects; // Ép kiểu danh sách các đối tượng
         } catch (Exception e) {
@@ -53,16 +71,13 @@ public class BookRedisService {
         }
     }
 
-    public Book getBookCategoryById(long categoryId, long bookId) {
-        String key = KEY_PREFIX + ":" + categoryId;
-        Book book = (Book) redisTemplate.opsForList().index(key, bookId);
-        return book;
-    }
-
     public void deleteBooksByCategoryId(long categoryId) {
         try {
-            String key = KEY_PREFIX + ":" + categoryId;
-            redisTemplate.delete(key);
+            String key = KEY_PREFIX + ":" + categoryId + ":*";
+            Set<String> keys = redisTemplate.keys(key);
+            if (keys != null && !keys.isEmpty()) {
+                redisTemplate.delete(keys);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

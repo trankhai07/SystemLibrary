@@ -42,6 +42,9 @@ public interface BookCopyRepository extends JpaRepository<BookCopy, Long> {
     @Query(value = "select * from book_copy where publisher_id = ?1 and book_id = ?2 and year_published = ?3", nativeQuery = true)
     Optional<BookCopy> findPublishYearOfPublisher(long publisherId, long bookId, long year);
 
+    @Query(value = "select * from book_copy where  book_id = ?1", nativeQuery = true)
+    Page<BookCopy> findAllByBook(long bookId, Pageable pageable);
+
     @Query(value = "select * from book_copy where book_id = ?1 and amount > 0", nativeQuery = true)
     List<BookCopy> checkBookAvailable(long bookId);
 }

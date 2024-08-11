@@ -11,6 +11,8 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { IBook } from 'app/shared/model/book.model';
 import { searchEntities, getEntities } from './book.reducer';
+import { EPath } from 'app/utils/constants/EPath';
+import InputSearch from 'app/components/input-search';
 
 export const Book = () => {
   const dispatch = useAppDispatch();
@@ -121,46 +123,36 @@ export const Book = () => {
   const handleSyncList = () => {
     sortEntities();
   };
+  const handleNextToDetail = (bookId: number) => {
+    console.log('bookId: ' + bookId);
+    navigate(`${EPath.BookCopy}?bookId=${bookId}&page=1`);
+  };
 
   return (
     <div>
       <h2 id="book-heading" data-cy="BookHeading">
         <Translate contentKey="systemLibraryApp.book.home.title">Books</Translate>
-        <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="systemLibraryApp.book.home.refreshListLabel">Refresh List</Translate>
-          </Button>
-          <Link to="/book/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="systemLibraryApp.book.home.createLabel">Create new Book</Translate>
-          </Link>
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <div className="w-25">
+            <InputSearch name={'search'} onChange={handleSearch} defaultValue={search} />
+            <Button type="reset" className="input-group-addon input-clear" onClick={clear}>
+              <FontAwesomeIcon icon="trash" />
+            </Button>
+          </div>
+          <div>
+            <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+              <FontAwesomeIcon icon="sync" spin={loading} />{' '}
+              <Translate contentKey="systemLibraryApp.book.home.refreshListLabel">Refresh List</Translate>
+            </Button>
+            <Link to="/book/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+              <FontAwesomeIcon icon="plus" />
+              &nbsp;
+              <Translate contentKey="systemLibraryApp.book.home.createLabel">Create new Book</Translate>
+            </Link>
+          </div>
         </div>
       </h2>
-      <Row>
-        <Col sm="12">
-          <Form onSubmit={startSearching}>
-            <FormGroup>
-              <InputGroup>
-                <Input
-                  type="text"
-                  name="search"
-                  defaultValue={search}
-                  onChange={handleSearch}
-                  placeholder={translate('systemLibraryApp.book.home.search')}
-                />
-                <Button className="input-group-addon">
-                  <FontAwesomeIcon icon="search" />
-                </Button>
-                <Button type="reset" className="input-group-addon" onClick={clear}>
-                  <FontAwesomeIcon icon="trash" />
-                </Button>
-              </InputGroup>
-            </FormGroup>
-          </Form>
-        </Col>
-      </Row>
+
       <div className="table-responsive">
         {bookList && bookList.length > 0 ? (
           <Table responsive>
@@ -172,32 +164,46 @@ export const Book = () => {
                 <th className="hand" onClick={sort('title')}>
                   <Translate contentKey="systemLibraryApp.book.title">Title</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
-                <th className="hand" onClick={sort('image')}>
-                  <Translate contentKey="systemLibraryApp.book.image">Image</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="">
+                  <Translate contentKey="systemLibraryApp.book.image">Image</Translate>
                 </th>
-                <th className="hand" onClick={sort('description')}>
-                  <Translate contentKey="systemLibraryApp.book.description">Description</Translate> <FontAwesomeIcon icon="sort" />
+                <th className="">
+                  <Translate contentKey="systemLibraryApp.book.description">Description</Translate>
+                </th>
+                <th className="hand" onClick={sort('category.name')}>
+                  <Translate contentKey="systemLibraryApp.book.category">Category</Translate> <FontAwesomeIcon icon="sort" />
                 </th>
                 <th>
-                  <Translate contentKey="systemLibraryApp.book.category">Category</Translate> <FontAwesomeIcon icon="sort" />
+                  <Translate contentKey="systemLibraryApp.book.author">Authors</Translate>
                 </th>
                 <th />
               </tr>
             </thead>
             <tbody>
               {bookList.map((book, i) => (
-                <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/book/${book.id}`} color="link" size="sm">
-                      {book.id}
-                    </Button>
-                  </td>
+                <tr key={`entity-${i}`} data-cy="entityTable" onClick={() => handleNextToDetail(book.id)} className="cursor-pointer">
+                  <td>{book.id}</td>
                   <td>{book.title}</td>
-                  <td>{book.image}</td>
+                  <td>
+                    {book.image && <img style={{ width: '100px', height: '50px', objectFit: 'cover' }} src={book.image} alt="image_book" />}
+                  </td>
                   <td>{book.description}</td>
-                  <td>{book.category ? <Link to={`/category/${book.category.id}`}>{book.category.name}</Link> : ''}</td>
+                  <td>{book.category ? book.category.name : ''}</td>
+                  <td>
+                    {book.authors
+                      ? book.authors.map((author, it) => {
+                          return (
+                            <>
+                              <span key={it}>{author.name}</span>
+                              <br />
+                            </>
+                          );
+                        })
+                      : ''}
+                  </td>
+
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="btn-group flex-btn-group-container" onClick={e => e.stopPropagation()}>
                       <Button tag={Link} to={`/book/${book.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">

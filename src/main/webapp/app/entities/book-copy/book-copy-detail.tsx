@@ -65,7 +65,7 @@ export const BookCopyDetail = () => {
           </dt>
           <dd>{bookCopyEntity.publisher ? bookCopyEntity.publisher.name : ''}</dd>
         </dl>
-        <Button tag={Link} to="/book-copy" replace color="info" data-cy="entityDetailsBackButton">
+        <Button onClick={() => history.back()} replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}
           <span className="d-none d-md-inline">
             <Translate contentKey="entity.action.back">Back</Translate>

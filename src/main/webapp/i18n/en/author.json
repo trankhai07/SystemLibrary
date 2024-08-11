@@ -5,13 +5,14 @@
         "title": "Authors",
         "refreshListLabel": "Refresh list",
         "createLabel": "Create a new Author",
+        "editLabel": "Edit a Author",
         "createOrEditLabel": "Create or edit a Author",
         "search": "Search for Author",
         "notFound": "No Authors found"
       },
-      "created": "A new Author is created with identifier {{ param }}",
-      "updated": "A Author is updated with identifier {{ param }}",
-      "deleted": "A Author is deleted with identifier {{ param }}",
+      "created": "Author created successfully!",
+      "updated": "Author updated successfully!",
+      "deleted": "Athour deleted successfully!",
       "delete": {
         "question": "Are you sure you want to delete Author {{ id }}?"
       },

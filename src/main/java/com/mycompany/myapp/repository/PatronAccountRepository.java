@@ -40,13 +40,27 @@ public interface PatronAccountRepository extends JpaRepository<PatronAccount, St
     Optional<PatronAccount> findOneWithToOneRelationships(@Param("id") String id);
 
     @Query(
-        value = "select distinct pa.* from check_out co " +
+        "select distinct pa from PatronAccount pa " +
+        "left join fetch pa.user u " +
+        "left join fetch u.authorities " +
+        "where u.login = :username"
+    )
+    Optional<PatronAccount> findOneByUserLogin(@Param("username") String username);
+
+    @Query(
+        value = "select distinct pa from PatronAccount pa left join fetch pa.user u where 'ROLE_USER' member of u.authorities",
+        countQuery = "select count(distinct pa) from PatronAccount pa left join pa.user u where 'ROLE_USER' member of u.authorities"
+    )
+    Page<PatronAccount> findAllUser(Pageable pageable);
+
+    @Query(
+        value = "select distinct pa.*, co.end_time from check_out co " +
         "JOIN patron_account pa ON pa.card_number = co.patron_account_card_number " +
         "and co.end_time < ?1 and co.status = 'Confirmed' " +
         "and co.is_returned = false " +
         "JOIN jhi_user ON jhi_user.id = pa.user_id " +
-        "and jhi_user.activated = true",
+        "and jhi_user.activated = true order by co.end_time",
         nativeQuery = true
     )
-    List<PatronAccount> listPatronNotEnoughCondition(Instant TimeNow);
+    Page<PatronAccount> listPatronNotEnoughCondition(Instant TimeNow, Pageable pageable);
 }

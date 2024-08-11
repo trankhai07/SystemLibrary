@@ -67,7 +67,11 @@ export const CategoryUpdate = () => {
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="systemLibraryApp.category.home.createOrEditLabel" data-cy="CategoryCreateUpdateHeading">
-            <Translate contentKey="systemLibraryApp.category.home.createOrEditLabel">Create or edit a Category</Translate>
+            {isNew ? (
+              <Translate contentKey="systemLibraryApp.category.home.createLabel">Create Category</Translate>
+            ) : (
+              <Translate contentKey="systemLibraryApp.category.home.editLabel">Edit Category</Translate>
+            )}
           </h2>
         </Col>
       </Row>
@@ -77,16 +81,6 @@ export const CategoryUpdate = () => {
             <p>Loading...</p>
           ) : (
             <ValidatedForm defaultValues={defaultValues()} onSubmit={saveEntity}>
-              {!isNew ? (
-                <ValidatedField
-                  name="id"
-                  required
-                  readOnly
-                  id="category-id"
-                  label={translate('global.field.id')}
-                  validate={{ required: true }}
-                />
-              ) : null}
               <ValidatedField
                 label={translate('systemLibraryApp.category.name')}
                 id="category-name"

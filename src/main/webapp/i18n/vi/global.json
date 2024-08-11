@@ -6,10 +6,11 @@
       "home": "Trang chủ",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
+        "aboutPeople": "About People",
         "main": "Thực thể",
-        "category": "Category",
-        "book": "Book",
-        "author": "Author",
+        "category": "Thể loại",
+        "book": "Books",
+        "author": "Tác giả",
         "waitList": "Wait List",
         "bookCopy": "Book Copy",
         "publisher": "Publisher",
@@ -49,7 +50,14 @@
       "confirmpassword.label": "Xác nhận mật khẩu mới",
       "confirmpassword.placeholder": "Nhập lại mật khẩu mới",
       "email.label": "Email",
-      "email.placeholder": "Nhập email của bạn"
+      "email.placeholder": "Nhập email của bạn",
+      "search": "Tìm kiếm",
+      "active": "Hoạt động",
+      "deactive": "Không hoạt động",
+      "confirmed": "Đã xác nhận",
+      "refused": "Bị từ chối",
+      "pending": "Đang chờ xác nhận",
+      "canceled": "Đã huỷ"
     },
     "messages": {
       "info": {
@@ -92,7 +100,10 @@
     "ribbon": {
       "dev": "Phát triển"
     },
-    "item-count": "Showing {{first}} - {{second}} of {{total}} items."
+    "item-count": "Showing {{first}} - {{second}} of {{total}} items.",
+    "header": {
+      "nameAccount": "Đăng nhập"
+    }
   },
   "entity": {
     "action": {
@@ -130,6 +141,14 @@
       "set": "Following filters are set",
       "clear": "Clear filter",
       "clearAll": "Clear all filters"
+    },
+    "recomment": {
+      "title": "Khuyến nghị",
+      "dimension": "Kích thước",
+      "image": "Dung lượng upload tối đa: 10MB/file.",
+      "audio": "Dung lượng upload tối đa: 20MB/file.",
+      "video": "Dung lượng upload tối đa: 100MB/file.",
+      "content": "Không được vượt quá 1000 ký tự."
     }
   },
   "error": {

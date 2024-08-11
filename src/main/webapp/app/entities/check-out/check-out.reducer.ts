@@ -16,6 +16,7 @@ const initialState: EntityState<ICheckOut> = {
 };
 
 const apiUrl = 'api/check-outs';
+const apiUrlClient = 'api/check-outs-client';
 const apiSearchUrl = 'api/_search/check-outs';
 
 // Actions
@@ -24,11 +25,25 @@ export const searchEntities = createAsyncThunk('checkOut/search_entity', async (
   const requestUrl = `${apiSearchUrl}?query=${query}${sort ? `&page=${page}&size=${size}&sort=${sort}` : ''}`;
   return axios.get<ICheckOut[]>(requestUrl);
 });
-
-export const getEntities = createAsyncThunk('checkOut/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
+type TCheckOutParams = IQueryParams & {
+  status?: string;
+  cardNumber?: string;
+  returned?: string | boolean;
+};
+export const getEntities = createAsyncThunk('checkOut/fetch_entity_list', async ({ page, size, sort, status }: TCheckOutParams) => {
+  const requestUrl = `${apiUrl}${
+    sort ? `?status=${status}&page=${page}&size=${size}&sort=${sort}&` : '?'
+  }cacheBuster=${new Date().getTime()}`;
   return axios.get<ICheckOut[]>(requestUrl);
 });
+
+export const getEntitiesClient = createAsyncThunk(
+  'checkOut/fetch_entity_list',
+  async ({ status, cardNumber, returned }: TCheckOutParams) => {
+    const requestUrl = `${apiUrlClient}?returned=${returned}&cardNumber=${cardNumber}&status=${status}&cacheBuster=${new Date().getTime()}`;
+    return axios.get<ICheckOut[]>(requestUrl);
+  }
+);
 
 export const getEntity = createAsyncThunk(
   'checkOut/fetch_entity',
@@ -96,7 +111,7 @@ export const CheckOutSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities, searchEntities), (state, action) => {
+      .addMatcher(isFulfilled(getEntities, searchEntities, getEntitiesClient), (state, action) => {
         const { data, headers } = action.payload;
 
         return {
@@ -112,7 +127,7 @@ export const CheckOutSlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity, searchEntities), state => {
+      .addMatcher(isPending(getEntities, getEntity, searchEntities, getEntitiesClient), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;

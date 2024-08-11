@@ -37,7 +37,8 @@ public class CheckOutRedisService {
             Duration duration = Duration.between(checkOut.getStartTime(), checkOut.getEndTime());
             long hours = duration.toHours();
             redisTemplate.expire(key, hours, TimeUnit.HOURS);
-            redisTemplate.opsForValue().set(keySub, "check", hours - 20, TimeUnit.HOURS);
+            //            redisTemplate.opsForValue().set(keySub, "check", hours - 20, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set(keySub, "check", Duration.ofSeconds(30));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,6 +58,8 @@ public class CheckOutRedisService {
     public void deleteCheckOutByKey(CheckOut checkOut) {
         try {
             String key = KEY_PREFIX + ":" + checkOut.getPatronAccount().getCardNumber() + ":" + checkOut.getId();
+            String keySub = key + ":Sub";
+            redisTemplate.delete(keySub);
             redisTemplate.delete(key);
         } catch (Exception e) {
             e.printStackTrace();

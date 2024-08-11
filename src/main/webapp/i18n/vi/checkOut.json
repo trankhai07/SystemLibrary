@@ -22,7 +22,13 @@
       "startTime": "Start Time",
       "endTime": "End Time",
       "status": "Status",
+      "Confirmed": "Đã xác nhận",
+      "Pending": "Đang chờ xác nhận",
+      "Refused": "Bị từ chối",
+      "Canceled": "Đã huỷ",
       "isReturned": "Is Returned",
+      "clientBorrow": "Quản lý sách mượn",
+      "clientReturn": "Quản lý sách trả",
       "bookCopy": "Book Copy",
       "patronAccount": "Patron Account"
     }

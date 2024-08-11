@@ -5,13 +5,14 @@
         "title": "Authors",
         "refreshListLabel": "Refresh list",
         "createLabel": "Thêm mới một Author",
+        "editLabel": "Chỉnh sửa một Author",
         "createOrEditLabel": "Thêm mới hoặc cập nhật Author",
         "search": "Tìm Author",
         "notFound": "No Authors found"
       },
-      "created": "Một Author mới được tạo với định danh {{ param }}",
-      "updated": "Một Author cập nhật với định danh {{ param }}",
-      "deleted": "Một Author đã xóa với định danh {{ param }}",
+      "created": "Author được tạo thành công!",
+      "updated": "Author được cập nhật thành công!",
+      "deleted": "Author được xoá thành công!",
       "delete": {
         "question": "Bạn có chắc là muốn xóa Author {{ id }}?"
       },

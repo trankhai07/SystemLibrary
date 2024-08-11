@@ -24,11 +24,18 @@ public class WaitListRedisService {
     public void add(Book book, PatronAccount patronAccount) {
         try {
             String key = KEY_PREFIX + ":" + book.getId();
+            String setKey = KEY_PREFIX + ":set:" + book.getId();
             InfoCheckOut infoCheckOut = new InfoCheckOut();
             infoCheckOut.setBookTitle(book.getTitle());
             infoCheckOut.setEmail(patronAccount.getUser().getEmail());
             infoCheckOut.setUsername(patronAccount.getUser().getLogin());
-            redisTemplate.opsForList().rightPush(key, objectMapper.writeValueAsString(infoCheckOut));
+            String infoCheckOutJson = objectMapper.writeValueAsString(infoCheckOut);
+
+            Boolean isMember = redisTemplate.opsForSet().isMember(setKey, infoCheckOutJson);
+            if (Boolean.FALSE.equals(isMember)) {
+                redisTemplate.opsForList().rightPush(key, infoCheckOutJson);
+                redisTemplate.opsForSet().add(setKey, infoCheckOutJson);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -54,6 +61,7 @@ public class WaitListRedisService {
     public InfoCheckOut poll(Book book) {
         try {
             String key = KEY_PREFIX + ":" + book.getId();
+
             String json = (String) redisTemplate.opsForList().leftPop(key.trim());
             if (json != null) {
                 InfoCheckOut infoCheckOut = objectMapper.readValue(json, InfoCheckOut.class);
@@ -69,6 +77,8 @@ public class WaitListRedisService {
     public void delete(long bookId) {
         try {
             String key = KEY_PREFIX + ":" + bookId;
+            String setKey = KEY_PREFIX + ":set:" + bookId;
+            redisTemplate.delete(setKey);
             redisTemplate.delete(key);
         } catch (Exception e) {
             e.printStackTrace();

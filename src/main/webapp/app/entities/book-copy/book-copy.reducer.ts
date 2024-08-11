@@ -14,6 +14,11 @@ const initialState: EntityState<IBookCopy> = {
   totalItems: 0,
   updateSuccess: false,
 };
+type bookCopyQueryParams = IQueryParams & {
+  bookId?: string | number;
+  year?: string | number;
+  publisherId?: string | number;
+};
 
 const apiUrl = 'api/book-copies';
 const apiSearchUrl = 'api/_search/book-copies';
@@ -25,8 +30,15 @@ export const searchEntities = createAsyncThunk('bookCopy/search_entity', async (
   return axios.get<IBookCopy[]>(requestUrl);
 });
 
-export const getEntities = createAsyncThunk('bookCopy/fetch_entity_list', async ({ page, size, sort }: IQueryParams) => {
-  const requestUrl = `${apiUrl}${sort ? `?page=${page}&size=${size}&sort=${sort}&` : '?'}cacheBuster=${new Date().getTime()}`;
+export const getEntities = createAsyncThunk('bookCopy/fetch_entity_list', async ({ bookId, page, size, sort }: bookCopyQueryParams) => {
+  const requestUrl = `${apiUrl}/book${
+    sort ? `?bookId=${bookId}&page=${page}&size=${size}&sort=${sort}&` : '?'
+  }cacheBuster=${new Date().getTime()}`;
+  return axios.get<IBookCopy[]>(requestUrl);
+});
+
+export const checkBookAvailable = createAsyncThunk('bookCopy/fetch_entity_list', async ({ bookId }: bookCopyQueryParams) => {
+  const requestUrl = `${apiUrl}/check-book-available?bookId=${bookId}&cacheBuster=${new Date().getTime()}`;
   return axios.get<IBookCopy[]>(requestUrl);
 });
 
@@ -34,6 +46,14 @@ export const getEntity = createAsyncThunk(
   'bookCopy/fetch_entity',
   async (id: string | number) => {
     const requestUrl = `${apiUrl}/${id}`;
+    return axios.get<IBookCopy>(requestUrl);
+  },
+  { serializeError: serializeAxiosError }
+);
+export const getEntityByYearPublisher = createAsyncThunk(
+  'bookCopy/fetch_entity',
+  async ({ bookId, year, publisherId }: bookCopyQueryParams) => {
+    const requestUrl = `${apiUrl}/publish-year?bookId=${bookId}&year=${year}&publisherId=${publisherId}`;
     return axios.get<IBookCopy>(requestUrl);
   },
   { serializeError: serializeAxiosError }
@@ -87,16 +107,16 @@ export const BookCopySlice = createEntitySlice({
   initialState,
   extraReducers(builder) {
     builder
-      .addCase(getEntity.fulfilled, (state, action) => {
-        state.loading = false;
-        state.entity = action.payload.data;
-      })
       .addCase(deleteEntity.fulfilled, state => {
         state.updating = false;
         state.updateSuccess = true;
         state.entity = {};
       })
-      .addMatcher(isFulfilled(getEntities, searchEntities), (state, action) => {
+      .addMatcher(isFulfilled(getEntityByYearPublisher, getEntity), (state, action) => {
+        state.loading = false;
+        state.entity = action.payload.data;
+      })
+      .addMatcher(isFulfilled(getEntities, searchEntities, checkBookAvailable), (state, action) => {
         const { data, headers } = action.payload;
 
         return {
@@ -112,7 +132,7 @@ export const BookCopySlice = createEntitySlice({
         state.updateSuccess = true;
         state.entity = action.payload.data;
       })
-      .addMatcher(isPending(getEntities, getEntity, searchEntities), state => {
+      .addMatcher(isPending(getEntities, getEntity, searchEntities, checkBookAvailable, getEntityByYearPublisher), state => {
         state.errorMessage = null;
         state.updateSuccess = false;
         state.loading = true;

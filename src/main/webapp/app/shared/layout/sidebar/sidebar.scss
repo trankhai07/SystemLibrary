@@ -1,0 +1,16 @@
+.newsidebar {
+  position: fixed;
+  top: 65px;
+  left: 0;
+  width: 100%;
+  box-shadow: 5px 5px 5px 0px #e5e2e2;
+  height: calc(100vh - 65px);
+  .scroll-menu {
+    height: calc(100vh - 65px) !important;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .scroll-menu::-webkit-scrollbar {
+    width: 0;
+  }
+}

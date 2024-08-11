@@ -40,11 +40,11 @@ public class CheckOut implements Serializable {
     private Boolean isReturned;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "checkOuts", "book", "publisher" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "checkOuts" }, allowSetters = true)
     private BookCopy bookCopy;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = { "user", "notifications", "waitLists", "checkOuts" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "notifications", "waitLists", "checkOuts" }, allowSetters = true)
     private PatronAccount patronAccount;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

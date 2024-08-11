@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { ICategory } from 'app/shared/model/category.model';
 import { searchEntities, getEntities } from './category.reducer';
+import InputSearch from 'app/components/input-search';
 
 export const Category = () => {
   const dispatch = useAppDispatch();
@@ -126,41 +127,27 @@ export const Category = () => {
     <div>
       <h2 id="category-heading" data-cy="CategoryHeading">
         <Translate contentKey="systemLibraryApp.category.home.title">Categories</Translate>
-        <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="systemLibraryApp.category.home.refreshListLabel">Refresh List</Translate>
-          </Button>
-          <Link to="/category/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="systemLibraryApp.category.home.createLabel">Create new Category</Translate>
-          </Link>
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <div className="w-25">
+            <InputSearch name={'search'} onChange={handleSearch} defaultValue={search} />
+            <Button type="reset" className="input-group-addon input-clear" onClick={clear}>
+              <FontAwesomeIcon icon="trash" />
+            </Button>
+          </div>
+          <div>
+            <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
+              <FontAwesomeIcon icon="sync" spin={loading} />{' '}
+              <Translate contentKey="systemLibraryApp.category.home.refreshListLabel">Refresh List</Translate>
+            </Button>
+            <Link to="/category/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+              <FontAwesomeIcon icon="plus" />
+              &nbsp;
+              <Translate contentKey="systemLibraryApp.category.home.createLabel">Create new Category</Translate>
+            </Link>
+          </div>
         </div>
       </h2>
-      <Row>
-        <Col sm="12">
-          <Form onSubmit={startSearching}>
-            <FormGroup>
-              <InputGroup>
-                <Input
-                  type="text"
-                  name="search"
-                  defaultValue={search}
-                  onChange={handleSearch}
-                  placeholder={translate('systemLibraryApp.category.home.search')}
-                />
-                <Button className="input-group-addon">
-                  <FontAwesomeIcon icon="search" />
-                </Button>
-                <Button type="reset" className="input-group-addon" onClick={clear}>
-                  <FontAwesomeIcon icon="trash" />
-                </Button>
-              </InputGroup>
-            </FormGroup>
-          </Form>
-        </Col>
-      </Row>
+
       <div className="table-responsive">
         {categoryList && categoryList.length > 0 ? (
           <Table responsive>
